@@ -4,68 +4,137 @@ package Application;
 
 import SMS.Message;
 import SMS.PhoneBookLogic;
+import UI.BSCPanel;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class BSC implements Runnable{
+public class BSC implements Runnable {
 
     private int id;
-    private int ProcessedMessages;
-    private int WaitingMessages; // podczas przekazania SMSa do kolejnej warstwy zawsze wybierany jest ten BTS/BSC który zawiera najmniej SMSów
-    private boolean isFull;
     private List <Message> gatheredMessages;
-    private List<BTS> connectedBTS; //layer?
-    private List<BSC> connectedBSC; //layer?
+    private int WaitingMessages;
+    boolean isFull;
+    private int ProcessedMessages;
+    private BSC connectedBSC;
+    private BTS connectedBTS;
+
+    // UI:
+    public BSCPanel panel;
+    public BSCLayer layer;
 
 
-
-    public BSC () {
+    public BSC (BSCLayer layer) {
         this.id = PhoneBookLogic.StationsCounter;
-        ProcessedMessages = 0;
+        PhoneBookLogic.StationsCounter++;
+
+        gatheredMessages = new ArrayList<Message>();
         WaitingMessages = 0;
         isFull = false;
 
-        PhoneBookLogic.StationsCounter++;
-    }
+        ProcessedMessages = 0;
 
-    @Override
-    public void run () {
-        // każdy BSC będzie przechowywał SMS przez losowy czas (od 5 do 15 sek) a następnie będzie go przekazywał do kolejnej warstwy;
-        while (true) {
-            processNextMessage();
-        }
+        connectedBSC = null;
+        connectedBTS = null;
+//        BSCManager.updateLastLayer();
+
+        // UI:
+        panel = new BSCPanel(this);
+
+        this.layer = layer;
     }
 
     void addMessage(Message message) {
-        gatheredMessages.add(message);
+        if (gatheredMessages.size() > 5) {
+            isFull = true;
+        } else {
+            gatheredMessages.add(message);
+            WaitingMessages = gatheredMessages.size();
+//            System.out.println(gatheredMessages.size() + " messages in BSC " + id);
+        }
+
     }
 
-    Message getNextMessage() {
-        return gatheredMessages.get(0);
+    @Override
+    public void run() {
+        System.out.println("BSC: " + id + " started");
+
+        while (true) {
+
+            if (gatheredMessages.size() > 0) {
+
+                panel.updateWaitingMessagesNumber(getWaitingMessages());
+                panel.updateProcessedMessagesNumber(getProcessedMessages());
+
+                try {
+                    Thread.sleep((long) (Math.random() * 10000 + 5000)); // wait for random time (5-15s)
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+
+                if (!layer.isLastLayer()) {
+                    connectToBSC(BSCManager.getLayerXbsc(BSCManager.getLayerNumber() -1));
+                }
+                else {
+                    connectToBTS(BTSManager.getLayer2BTS());
+                }
+
+                processNextMessage();
+
+                panel.updateWaitingMessagesNumber(getWaitingMessages());
+                panel.updateProcessedMessagesNumber(getProcessedMessages());
+
+            } else {
+                try {
+                    Thread.sleep(100); // Jeżeli nie ma oczekujących wiadomości, czekaj przed kolejną iteracją pętli
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
     }
 
-    void processNextMessage() {
-        Message m = getNextMessage();
-        // process:
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    public void connectToBSC (BSC bsc) {
+        this.connectedBSC = bsc;
+    }
+
+    public void connectToBTS (BTS bts) {
+        this.connectedBTS = bts;
+    }
+
+    public void processNextMessage() {
+        Message m = gatheredMessages.get(0);
+
+        // Przetwarzanie wiadomości...
+        if (connectedBSC != null) {
+            connectedBSC.addMessage(m);
+        } else if (connectedBTS != null) {
+            connectedBTS.addMessage(m);
+        } else {
+            System.out.println("BSC " + id + " is not connected to any BTS or BSC");
         }
 
 
-
-        // post process:
         gatheredMessages.remove(0);
+        WaitingMessages = gatheredMessages.size();
         ProcessedMessages++;
-    }
-
-    BTS getNextBTS() {
-        return connectedBTS.get(0);
+        isFull = false; // Aktualizacja flagi isFull
     }
 
     public int getId () {
         return id;
     }
+    public int getProcessedMessages () {
+        return ProcessedMessages;
+    }
+
+    public int getWaitingMessages () {
+        return WaitingMessages;
+    }
+
 
 }
+
+

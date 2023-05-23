@@ -15,7 +15,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import static Application.MainLogic.addToVBDLayer;
+//import static Application.MainLogic.addToVBDLayer;
 
 
 // VBD SENDER DEVICE PANEL - LEFT SIDE
@@ -84,10 +84,12 @@ public class _3_SenderPanel extends JPanel /* extends DevicePanel */ implements 
 //        System.out.println("Created message: " + message.toString());
 
         VBD testVBD = new VBD(message);
-        addToVBDLayer(testVBD);
+//        addToVBDLayer(testVBD);
 
         VBDPanel vbdUI = new VBDPanel(testVBD);
         devicesContainer.add(vbdUI);
+
+//        devicesContainer.add(testVBD.panel);
 
 //        devicesContainer.revalidate();
 //        devicesContainer.repaint();

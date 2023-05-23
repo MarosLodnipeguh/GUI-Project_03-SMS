@@ -16,11 +16,15 @@ public class BTS implements Runnable{
     private int WaitingMessages; // podczas przekazania SMSa do kolejnej warstwy zawsze wybierany jest ten BTS/BSC który zawiera najmniej SMSów
     boolean isFull;
     private int ProcessedMessages;
+    private BSC connectedBSC;
+    private VRD connectedVRD;
 
+    // UI:
     public BTSPanel panel;
+    public BTSLayer layer;
 
 
-    public BTS () {
+    public BTS (BTSLayer layer) {
         this.id = PhoneBookLogic.StationsCounter;
         PhoneBookLogic.StationsCounter++;
 
@@ -30,16 +34,26 @@ public class BTS implements Runnable{
 
         ProcessedMessages = 0;
 
+        connectedBSC = null;
+        connectedVRD = null;
+
+        // UI:
         panel = new BTSPanel(this);
+
+        this.layer = layer;
     }
 
 
     void addMessage(Message message) {
-        gatheredMessages.add(message);
-        WaitingMessages = gatheredMessages.size();
-        System.out.println(gatheredMessages.size() + " messages in BTS " + id);
+        if (gatheredMessages.size() > 5) {
+            isFull = true;
+//            System.out.println("BTS " + id + " is full");
+        } else {
+            gatheredMessages.add(message);
+            WaitingMessages = gatheredMessages.size();
+//            System.out.println(gatheredMessages.size() + " messages in BTS " + id);
+        }
 
-//        panel.updateWaitingMessagesNumber(getWaitingMessages());
     }
 
 
@@ -51,21 +65,32 @@ public class BTS implements Runnable{
 
             if (gatheredMessages.size() > 0) {
 
+                panel.updateWaitingMessagesNumber(getWaitingMessages());
+                panel.updateProcessedMessagesNumber(getProcessedMessages());
+
                 try {
-                    System.out.println("BTS: " + id + " waiting for 3 seconds");
+//                    System.out.println("BTS: " + id + " waiting for 3 seconds");
                     Thread.sleep(3000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
 
-                panel.updateWaitingMessagesNumber(getWaitingMessages());
+
+                if (!layer.isLastLayer()) {
+                    connectToBSC(BSCManager.getLayerXbsc(0)); // pierwsza wartswa BSC
+                }
+                else {
+                    connectToVRD();
+                }
+
                 processNextMessage();
+
+                panel.updateWaitingMessagesNumber(getWaitingMessages());
                 panel.updateProcessedMessagesNumber(getProcessedMessages());
+
             } else {
                 try {
-                    // Jeżeli nie ma oczekujących wiadomości, czekaj przed kolejną iteracją pętli
-//                    System.out.println("BTS: " + id + " waiting for messages");
-                    Thread.sleep(1000);
+                    Thread.sleep(100); // Jeżeli nie ma oczekujących wiadomości, czekaj przed kolejną iteracją pętli
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -73,21 +98,30 @@ public class BTS implements Runnable{
             }
 
 
-//            if (gatheredMessages.size() > 5) {
-//                isFull = true;
-//                System.out.println("BTS " + id + " is full");
-//            } else continue;
+
         }
     }
 
+    public void connectToBSC (BSC bsc) {
+        this.connectedBSC = bsc;
+    }
 
-
+    public void connectToVRD () {
+        this.connectedVRD = VRDManager.getVRD(gatheredMessages.get(0).getRecipient());
+    }
 
     public void processNextMessage() {
         Message m = gatheredMessages.get(0);
-        // Przetwarzanie wiadomości...
 
-        System.out.println("BTS " + id + ": processed message ");
+        // Przetwarzanie wiadomości...
+        if (connectedBSC != null) {
+            connectedBSC.addMessage(m);
+        } else if (connectedVRD != null) {
+            connectedVRD.receiveMessage(m);
+        } else {
+            System.out.println("BTS " + id + " is not connected to any BSC or VRD");
+        }
+//        System.out.println("BTS " + id + ": processed message ");
 
         gatheredMessages.remove(0);
         WaitingMessages = gatheredMessages.size();

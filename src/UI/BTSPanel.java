@@ -16,7 +16,7 @@ public class BTSPanel extends JPanel {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         // ===================================== CONTENT ===================================== //
-        numberLabel = new JLabel("Station Number: " + bts.getId());
+        numberLabel = new JLabel("Station ID: " + bts.getId());
         processedMessagesNumber = new JLabel("Processed: " + bts.getProcessedMessages());
         waitingMessagesNumber = new JLabel("Waiting: " + bts.getWaitingMessages());
 

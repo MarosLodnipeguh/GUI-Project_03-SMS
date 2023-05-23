@@ -2,18 +2,14 @@ package Application;
 
 import Listeners.VBDListener;
 import SMS.Message;
-import UI._3_SenderPanel;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainLogic {
     
     private static List <VBD> vbdLayer;
-
     private List <BSCLayer> bscLayer;
-
     private List <VRD> vrdLayer;
 
     public MainLogic () {
@@ -21,19 +17,15 @@ public class MainLogic {
         this.bscLayer = new ArrayList<BSCLayer>();
         this.vrdLayer = new ArrayList<VRD>();
 
-//        VBDManager vbdManager = new VBDManager ();
         BTSManager btsManager = new BTSManager ();
         BSCManager bscManager = new BSCManager ();
-
-        // stan uruchomieniowy:
-
-        bscLayer.add(new BSCLayer());
+        VRDManager vrdManager = new VRDManager ();
 
     }
 
-    public static void addToVBDLayer (VBD vbd) {
-        vbdLayer.add(vbd);
-    }
+//    public static void addToVBDLayer (VBD vbd) {
+//        vbdLayer.add(vbd);
+//    }
 
 
 

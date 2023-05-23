@@ -45,21 +45,29 @@ public class VBD implements Runnable {
 
     @Override
     public void run () {
-        this.isSending = true;
 
         while (true) {
 
-            connectedBTS = BTSManager.getLayer1BTS();
+            if (isSending) {
+                connectToBTS(BTSManager.getLayer1BTS());
+                sendMessage();
 
-            sendMessage();
-            //DEBUG:
-            System.out.println("VBD: " + number + " sent message to BTS: " + connectedBTS.getId());
+                try {
+//                System.out.println("\nsleeping for " + sendFrequency + "ms\n");
+                    Thread.sleep((long) sendFrequency);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
-            try {
-                System.out.println("\nsleeping for " + sendFrequency + "ms\n");
-                Thread.sleep((long) sendFrequency);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+
+            }
+
+            else {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
 
         }
@@ -73,6 +81,10 @@ public class VBD implements Runnable {
         this.message = message;
     }
 
+    public void setSending (boolean sending) {
+        System.out.println("VBD: " + number + " is sending: " + sending);
+        isSending = sending;
+    }
 
     // Listener test
 

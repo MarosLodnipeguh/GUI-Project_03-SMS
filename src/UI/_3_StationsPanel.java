@@ -1,7 +1,6 @@
 package UI;
 
-import Application.BSC;
-import Application.BTS;
+import Application.*;
 import Listeners.BSCListener;
 import Listeners.BTSListener;
 import SMS.Message;
@@ -31,7 +30,14 @@ public class _3_StationsPanel extends JPanel implements BTSListener, BSCListener
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed (ActionEvent e) {
-                addLayer();
+
+                BSCLayer layer = BSCManager.createNewBscLayer();
+
+
+
+                BSCLayersContainer.add(layer.layer, getComponentCount()-1);
+                revalidate();
+                repaint();
             }
         });
 
@@ -47,37 +53,36 @@ public class _3_StationsPanel extends JPanel implements BTSListener, BSCListener
 
         layersContainer = new JPanel();
         layersContainer.setLayout(new BoxLayout(layersContainer, BoxLayout.X_AXIS));
-//        layersContainer.setBackground(Color.decode("#AEBDCA"));
 
+        // 1st BTS LAYER:
+        layersContainer.add(BTSManager.getBTSLayerUI(0) );
+
+        // BSC LAYERS:
         BSCLayersContainer = new JPanel();
-//        BSCLayersContainer.setBackground(Color.decode("#AEBDCA"));
-        BSCLayersContainer.add(new _4_BSCLayer());
+        BSCLayersContainer.add(BSCManager.getBscLayerUI(0) );
         JScrollPane BSCscroll = new JScrollPane(BSCLayersContainer);
-
-        layersContainer.add(new _4_BTSLayer());
         layersContainer.add(BSCscroll);
-        layersContainer.add(new _4_BTSLayer());
 
-//        scroll = new JScrollPane(layersContainer);
+        // 2nd BTS LAYER:
+        layersContainer.add(BTSManager.getBTSLayerUI(1) );
 
 
         buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.add(addButton);
         buttonPanel.add(removeButton);
 
-//        add(scroll, BorderLayout.CENTER);
         add(layersContainer, BorderLayout.CENTER);
         add(buttonPanel, BorderLayout.SOUTH);
 
     }
 
-    public void addLayer() {
-        _4_BSCLayer layer = new _4_BSCLayer();
-
-        BSCLayersContainer.add(layer, getComponentCount()-1);
-        revalidate();
-        repaint();
-    }
+//    public void addLayer() {
+//        BSCLayerUI layer = new BSCLayerUI();
+//
+//        BSCLayersContainer.add(layer, getComponentCount()-1);
+//        revalidate();
+//        repaint();
+//    }
 
     public void removeLayer() {
 

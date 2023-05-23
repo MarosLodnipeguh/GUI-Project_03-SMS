@@ -28,30 +28,29 @@ public class VRDPanel extends JPanel {
         // ===================================== CHECK BOX ===================================== //
         autoMessageDelete = new JCheckBox("Auto delete messages (10s)");
 
-            //logika checkboxa
         autoMessageDelete.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
                 if (autoMessageDelete.isSelected()) {
 
-                    int value = 100000;
-
-//                    autoMessageDelete.setText("Auto delete messages No. every 10s");
-                    receivedMessagesNumber.setText("Received messages: " + value);
+//                    int value = 100000;
+//
+////                    autoMessageDelete.setText("Auto delete messages No. every 10s");
+//                    receivedMessagesNumber.setText("Received messages: " + value);
 
                 } else {
 
-                    int value = 0;
-
-//                    autoMessageDelete.setText("Don't auto delete");
-                    receivedMessagesNumber.setText("Received messages: " + value);
+//                    int value = 0;
+//
+////                    autoMessageDelete.setText("Don't auto delete");
+//                    receivedMessagesNumber.setText("Received messages: " + value);
 
                 }
             }
         });
 
         // ===================================== RECEIVED NUMBER ===================================== //
-        receivedMessagesNumber = new JLabel("Received messages: 0");
+        receivedMessagesNumber = new JLabel("Received messages: " + vrd.receivedMessagesCount());
         // ===================================== STOP BUTTON ===================================== //
         stopButton = new JButton("Remove VRD");
 
@@ -62,5 +61,9 @@ public class VRDPanel extends JPanel {
         add(autoMessageDelete);
         add(stopButton);
 
+    }
+
+    public void updateReceivedMessagesNumber (int count) {
+        SwingUtilities.invokeLater(() -> receivedMessagesNumber.setText("Received messages: " + count));
     }
 }

@@ -6,6 +6,8 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Hashtable;
 
 public class VBDPanel extends JPanel {
@@ -28,8 +30,19 @@ public class VBDPanel extends JPanel {
         // ===================================== NUMBER FIELD ===================================== //
         deviceNumberTextField = new JTextField(vbd.getNumber());
         deviceNumberTextField.setEditable(false);
+
         // ===================================== COMBO BOX ===================================== //
         stateComboBox = new JComboBox<>(new String[]{"WAITING", "ACTIVE"});
+
+        stateComboBox.addActionListener(e -> {
+            String selectedOption = (String) stateComboBox.getSelectedItem();
+            if (selectedOption.equals("ACTIVE")) {
+                vbd.setSending(true);
+            } else if (selectedOption.equals("WAITING")) {
+                vbd.setSending(false);
+            }
+        });
+
         // ===================================== SLIDER ===================================== //
         frequencyLabel = new JLabel("Frequency of sending: 5s");
 

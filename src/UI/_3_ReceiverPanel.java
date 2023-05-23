@@ -26,7 +26,7 @@ public class _3_ReceiverPanel extends JPanel /* extends DevicePanel */ implement
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed (ActionEvent e) {
-                addVRDPanel();
+                addVRD();
             }
         });
         add(addButton, BorderLayout.SOUTH);
@@ -45,15 +45,19 @@ public class _3_ReceiverPanel extends JPanel /* extends DevicePanel */ implement
 
     }
 
-    public void addVRDPanel() {
+    public void addVRD() {
 
         VRD vrd = new VRD();
 
-        VRDPanel vrdUI = new VRDPanel(vrd);
 
-        devicesContainer.add(vrdUI);
+        devicesContainer.add(vrd.panel);
+
+
         revalidate();
         repaint();
+
+        Thread vrdThread = new Thread(vrd);
+        vrdThread.start();
     }
 
 
