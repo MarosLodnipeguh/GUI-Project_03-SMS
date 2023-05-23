@@ -16,7 +16,19 @@ public class _4_BTSLayer extends JPanel {
 
 
 
+
 //        new BTSPanel(BTSManager.addLayer());
-        new BTSPanel(new BTS());
+//        new BTSPanel(new BTS());
+
+        // Stan uruchumieniowy:
+        BTS bts = BTSManager.addLayer();
+//        add(new BTSPanel(bts));
+        add(bts.panel);
+
+        revalidate();
+        repaint();
+
+        Thread btsThread = new Thread(bts);
+        btsThread.start();
     }
 }

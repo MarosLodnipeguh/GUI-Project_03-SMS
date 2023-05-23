@@ -39,7 +39,7 @@ public class BTSManager implements BTSListener {
     public static BTS getLayer1BTS () {
         // zwraca pierwszy niezapełniony BTS z warstwy 1
         for (BTS bts : btsLayers.get(0).btsList) {
-            if (bts.isFull == false) {
+            if (!bts.isFull) {
                 return bts;
             }
         }

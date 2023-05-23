@@ -24,6 +24,13 @@ public class BTSPanel extends JPanel {
         add(processedMessagesNumber);
         add(waitingMessagesNumber);
 
+    }
 
+    public void updateProcessedMessagesNumber (int processedMessages) {
+        SwingUtilities.invokeLater(() -> processedMessagesNumber.setText("Processed: " + processedMessages));
+    }
+
+    public void updateWaitingMessagesNumber (int waitingMessages) {
+        SwingUtilities.invokeLater(() -> waitingMessagesNumber.setText("Waiting: " + waitingMessages));
     }
 }

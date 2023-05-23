@@ -18,7 +18,7 @@ public class VBDPanel extends JPanel {
 
 
 
-    public VBDPanel (VBD device) {
+    public VBDPanel (VBD vbd) {
         setPreferredSize(new Dimension(210, 160));
         setBorder(BorderFactory.createTitledBorder("VBD"));
 
@@ -26,7 +26,7 @@ public class VBDPanel extends JPanel {
         // ===================================== CONTENT ===================================== //
         numberLabel = new JLabel("Number: ");
         // ===================================== NUMBER FIELD ===================================== //
-        deviceNumberTextField = new JTextField(device.getNumber());
+        deviceNumberTextField = new JTextField(vbd.getNumber());
         deviceNumberTextField.setEditable(false);
         // ===================================== COMBO BOX ===================================== //
         stateComboBox = new JComboBox<>(new String[]{"WAITING", "ACTIVE"});

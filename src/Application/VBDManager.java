@@ -8,12 +8,7 @@ public class VBDManager implements VBDListener {
 
 
     @Override
-    public void onMessageSent (VBD vbd, Message message) {
-
-    }
-
-    @Override
-    public void onVBDRemoved (VBD vbd) {
+    public void addVBDPanel (VBD vbd) {
 
     }
 }

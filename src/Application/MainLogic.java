@@ -1,7 +1,10 @@
 package Application;
 
+import Listeners.VBDListener;
 import SMS.Message;
+import UI._3_SenderPanel;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,9 +18,7 @@ public class MainLogic {
 
     public MainLogic () {
         this.vbdLayer = new ArrayList<VBD>();
-
         this.bscLayer = new ArrayList<BSCLayer>();
-
         this.vrdLayer = new ArrayList<VRD>();
 
 //        VBDManager vbdManager = new VBDManager ();
@@ -30,8 +31,16 @@ public class MainLogic {
 
     }
 
-    public static VBD addVBD (Message message) { // wywoływane przez UI
+    public static void addToVBDLayer (VBD vbd) {
+        vbdLayer.add(vbd);
+    }
+
+
+
+    public static VBD addVBD (VBDListener source, Message message) { // wywoływane przez UI
         VBD vbd = new VBD(message);
+        vbd.addVBDListener(source); // dodaje SenderPanel jako listenera do listenerów tego VBD
+        vbd.fireAddVBDPanel(vbd);
         vbdLayer.add(vbd);
         return vbd;
     }

@@ -3,7 +3,7 @@ package UI;
 import javax.swing.*;
 import java.awt.*;
 
-public class _1_MainFrame extends JFrame {
+public class _1_MainFrame extends JFrame implements Runnable {
 
     public _1_MainFrame () throws HeadlessException {
         setTitle("Symulator SMS");
@@ -13,5 +13,10 @@ public class _1_MainFrame extends JFrame {
         _2_MainPanel mainPanel = new _2_MainPanel();
         add(mainPanel);
         setVisible(true);
+    }
+
+    @Override
+    public void run () {
+        new _1_MainFrame();
     }
 }

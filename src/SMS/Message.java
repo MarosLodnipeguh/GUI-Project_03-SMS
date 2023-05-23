@@ -7,7 +7,7 @@ public class Message { // obiekt przesyłany między VBD i VRD
             content;
 
     public Message(String sender, String recipent, String content) {
-        this.sender = null;
+        this.sender = sender;
         this.recipient = recipent;
         this.content = content;
     }
@@ -24,6 +24,15 @@ public class Message { // obiekt przesyłany między VBD i VRD
 
     public String getContent() {
         return content;
+    }
+
+    @Override
+    public String toString () {
+        return "Message{" +
+                "sender='" + sender + '\'' +
+                ", recipient='" + recipient + '\'' +
+                ", content='" + content + '\'' +
+                '}';
     }
 
     // todo: metody do walidacji numerów telefonów, formatowania wiadomości, czy kodowania/dekodowania w standardzie PDU
