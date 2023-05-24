@@ -31,11 +31,11 @@ public class _3_StationsPanel extends JPanel implements BTSListener, BSCListener
             @Override
             public void actionPerformed (ActionEvent e) {
 
-                BSCLayer layer = BSCManager.createNewBscLayer();
+//                BSCLayer layer = BSCManager.createNewBscLayer();
 
 
 
-                BSCLayersContainer.add(layer.layer, getComponentCount()-1);
+//                BSCLayersContainer.add(layer.layer, getComponentCount()-1);
                 revalidate();
                 repaint();
             }

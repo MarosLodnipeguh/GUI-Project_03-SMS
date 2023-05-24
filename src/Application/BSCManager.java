@@ -15,8 +15,9 @@ public class BSCManager implements BSCListener {
     public BSCManager () {
         bscLayers = new ArrayList<BSCLayer>();
         lastLayerNumber = 0;
-        
-        bscLayers.add(new BSCLayer(/*true*/));
+
+        // stan uruchiemniowy:
+        addLayer();
     }
 
     public static BSC getLayerXbsc (int x) {
@@ -44,6 +45,11 @@ public class BSCManager implements BSCListener {
         return getLayerXbsc(x);
     }
 
+    public void addLayer () {
+        bscLayers.add(new BSCLayer(lastLayerNumber));
+        lastLayerNumber++;
+    }
+
     public static int getLastLayerNumber () {
         return lastLayerNumber;
     }
@@ -58,8 +64,7 @@ public class BSCManager implements BSCListener {
 //            bscL.setLastLayer(false);
 //        }
 
-        BSCLayer newLayer = new BSCLayer(/*true*/);
-        bscLayers.add(newLayer);
+        addLayer;
 
         lastLayerNumber++;
 

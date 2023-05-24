@@ -1,0 +1,56 @@
+07 91 5892208800F0
+
+
+07 = addres lenght (7 oktetów w value jeśli 9 liczb w numerze telefonu?)
+
+91 = type of address 10010001
+1 stała
+001 type of number (international)
+0001 numbering-plan-identification (ISDN)
+
+58 92 20 88 00 F0 = address value (Appendix A) F0 to zakończenie
+
+20 => 0010_0000 => 2_0 (digit 2 i digit 1 semioktetu w tabelce)
+88 => 1000_1000 => 8_8
+00 => 0000_0000 => 0_0
+F0 => 		=> F_0 (0 to ostatnia liczba numeru telefonu tutaj)
+
+
+data coding scheme ważne
+dowolność tutaj, wybieramy co chcemy
+bez problemu mogę kodować ascii tutaj jako default alphabet
+
+tak samo w international number, dowolność jest
+
+
+VBD każdy musi mieć licznik wysłanych smsów!!
+plik binarny przy zakmnięciu (exit on close) (w jednej linii wszystko bo numer smsow mozna w int zapisac wiec robie potem read int
+i będzie też string
+
+VBD z każdym wysłaniem wiadomości ma wybierać losowego odbiorce (i dopiero wtedy kodować wiadomość i ją wysyłać) i z każdym wysłaniem wysyła do losowego odbiorcy (powstaje za każdym razem nowa wiadomość z nowym odbiorcą)
+jak nie ma zadnych VRD to tylko czeka aż jakiś będzie (a nie mój exception)
+
+ostatni bts musi zdekodować wiadomość, żeby znać numer odbiorcy
+
+todo: exception na ostatnim btsie ze nie znalazl odbiorcy
+
+binarne
+kolekcje uzycie (hash mapa??) nie uzywaj wszedzie arraylisty, te co byly na wykladzie to nie wystarcza XDD nie jest optymalna do wielowatkowosci (bezpieczna)
+wątki mają być w kolekcji jakiejś?
+condition racing w zwykłych tablicach, to co użyć?
+wątki, zdarzenia 2pkt
+interfejs
+1 punkt opcjonalny
+pdu?
+
+
+to zadanko, po zrobieniu na odjeb:
+rodziel logike
+zdarzenia
+operacje
+
+kazda operacja miedzy logika a interfejsem i w druga strone ma isc bo eventach do listenerów ta? 
+żeby móc to nazwać rozdziałem
+
+createVBDevent ma sens wsm
+i tam wszystkie wartości vbd w tym evencie wpierdalam

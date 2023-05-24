@@ -14,11 +14,11 @@ public class BSCLayer {
     //UI:
     public BSCLayerUI layer;
 
-    public BSCLayer (/*boolean isLastLayer*/) {
+    public BSCLayer (/*boolean isLastLayer*/ int layerNumber) {
         this.bscList = new ArrayList<BSC>();
 //        this.isLastLayer = isLastLayer;
 
-        this.layerNumber = /*BSCManager.getLayerNumber();*/ BSCManager.getLastLayerNumber() + 1;
+        this.layerNumber = layerNumber;
 
         // UI:
         layer = new BSCLayerUI(this);
