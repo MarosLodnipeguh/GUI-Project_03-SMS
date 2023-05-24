@@ -8,16 +8,17 @@ import java.util.List;
 public class BSCLayer {
 
     private List<BSC> bscList;
-    private boolean isLastLayer;
+//    private boolean isLastLayer;
     private int layerNumber;
 
+    //UI:
     public BSCLayerUI layer;
 
-    public BSCLayer (boolean isLastLayer) {
+    public BSCLayer (/*boolean isLastLayer*/) {
         this.bscList = new ArrayList<BSC>();
-        this.isLastLayer = isLastLayer;
+//        this.isLastLayer = isLastLayer;
 
-        this.layerNumber = BSCManager.getLayerNumber();
+        this.layerNumber = /*BSCManager.getLayerNumber();*/ BSCManager.getLastLayerNumber() + 1;
 
         // UI:
         layer = new BSCLayerUI(this);
@@ -36,13 +37,17 @@ public class BSCLayer {
         return bscList;
     }
 
-    public boolean isLastLayer () {
-        return isLastLayer;
+    public int getLayerNumber () {
+        return layerNumber;
     }
 
-    public void setLastLayer (boolean lastLayer) {
-        isLastLayer = lastLayer;
-    }
+    //    public boolean isLastLayer () {
+//        return isLastLayer;
+//    }
+
+//    public void setLastLayer (boolean lastLayer) {
+//        isLastLayer = lastLayer;
+//    }
 }
 
 

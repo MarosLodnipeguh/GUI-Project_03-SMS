@@ -10,13 +10,13 @@ import java.util.List;
 public class BSCManager implements BSCListener {
 
     private static List<BSCLayer> bscLayers;
-//    private static int lastLayer;
+    private static int lastLayerNumber;
 
     public BSCManager () {
         bscLayers = new ArrayList<BSCLayer>();
+        lastLayerNumber = 0;
         
-        bscLayers.add(new BSCLayer(true));
-//        lastLayer = 0;
+        bscLayers.add(new BSCLayer(/*true*/));
     }
 
     public static BSC getLayerXbsc (int x) {
@@ -44,18 +44,26 @@ public class BSCManager implements BSCListener {
         return getLayerXbsc(x);
     }
 
+    public static int getLastLayerNumber () {
+        return lastLayerNumber;
+    }
 
     public static BSCLayerUI getBscLayerUI (int i) {
         return bscLayers.get(i).layer;
     }
 
     public static BSCLayer createNewBscLayer () {
-        BSCLayer newLayer = new BSCLayer(true);
+
+//        for (BSCLayer bscL : bscLayers) {
+//            bscL.setLastLayer(false);
+//        }
+
+        BSCLayer newLayer = new BSCLayer(/*true*/);
         bscLayers.add(newLayer);
 
-        for (BSCLayer bscL : bscLayers) {
-            bscL.setLastLayer(false);
-        }
+        lastLayerNumber++;
+
+
 //        updateLastLayer();
         return newLayer;
     }

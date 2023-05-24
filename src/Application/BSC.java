@@ -19,9 +19,14 @@ public class BSC implements Runnable {
     private BSC connectedBSC;
     private BTS connectedBTS;
 
+
+    private int layerNumber;
+    public BSCLayer layer;
+
     // UI:
     public BSCPanel panel;
-    public BSCLayer layer;
+
+
 
 
     public BSC (BSCLayer layer) {
@@ -34,6 +39,9 @@ public class BSC implements Runnable {
 
         ProcessedMessages = 0;
 
+        this.layer = layer;
+        layerNumber = layer.getLayerNumber();
+
         connectedBSC = null;
         connectedBTS = null;
 //        BSCManager.updateLastLayer();
@@ -41,7 +49,7 @@ public class BSC implements Runnable {
         // UI:
         panel = new BSCPanel(this);
 
-        this.layer = layer;
+
     }
 
     void addMessage(Message message) {
@@ -73,11 +81,12 @@ public class BSC implements Runnable {
                 }
 
 
-                if (!layer.isLastLayer()) {
-                    connectToBSC(BSCManager.getLayerXbsc(BSCManager.getLayerNumber() -1));
+                if (/*!layer.isLastLayer()*/ layerNumber == BSCManager.getLastLayerNumber()) {
+                    connectToBTS(BTSManager.getLayer2BTS());
+
                 }
                 else {
-                    connectToBTS(BTSManager.getLayer2BTS());
+                    connectToBSC(BSCManager.getLayerXbsc(/*BSCManager.getLayerNumber() -1*/ layerNumber + 1));
                 }
 
                 processNextMessage();
