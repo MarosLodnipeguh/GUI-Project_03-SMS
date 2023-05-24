@@ -1,0 +1,15 @@
+muszę to zrobić tak, że stworzy się cała uruchomieniowa logika z konstruktora MainLogic
+a dopiero potem bazując na kolekjach layerów, będą sie tworzyły layery w grafice
+
+
+1. new MainLogic
+2. new BSCManager
+3. new BSCLayer
+4. new BSC
+
+grafika:
+new MainFrame
+new MainPanel
+new StationsPanel
+5. new BSCLayerUI (BSCManager.BSCLayer[0])
+6. BSCLayerUI konstruktor -> update: for each BSC in BSCLayer[0] -> addNewPanel(BSC)

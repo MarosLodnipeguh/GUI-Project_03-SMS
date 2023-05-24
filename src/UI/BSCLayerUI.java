@@ -9,8 +9,11 @@ import java.awt.*;
 public class BSCLayerUI extends JPanel {
 
     private JPanel stationsContainer;
+    private BSCLayer logicLayer;
 
     public BSCLayerUI (BSCLayer layer) {
+
+        logicLayer = layer;
 
         setPreferredSize(new Dimension(160, 474));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -22,7 +25,15 @@ public class BSCLayerUI extends JPanel {
         scroll.setBorder(BorderFactory.createTitledBorder("BSC Layer"));
         add(scroll, BorderLayout.CENTER);
 
+        updatePanels();
 
+
+    }
+
+    public void updatePanels () {
+        for (BSC bsc: logicLayer.getBscList()) {
+            addNewPanel(bsc);
+        }
     }
 
     public void addNewPanel (BSC bsc) {

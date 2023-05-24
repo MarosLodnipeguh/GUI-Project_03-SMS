@@ -8,29 +8,31 @@ import java.util.List;
 public class BSCLayer {
 
     private List<BSC> bscList;
-//    private boolean isLastLayer;
     private int layerNumber;
 
     //UI:
-    public BSCLayerUI layer;
+//    public BSCLayerUI layer;
 
-    public BSCLayer (/*boolean isLastLayer*/ int layerNumber) {
+    public BSCLayer (int layerNumber) {
         this.bscList = new ArrayList<BSC>();
-//        this.isLastLayer = isLastLayer;
+
 
         this.layerNumber = layerNumber;
 
-        // UI:
-        layer = new BSCLayerUI(this);
+
 
         // stan uruchomieniowy:
         addBSC(new BSC(this));
+
+        // UI:
+//        layer = new BSCLayerUI(this);
 
     }
 
     public void addBSC (BSC bsc) {
         bscList.add(bsc);
-        layer.addNewPanel(bsc);
+        //UI:
+//        layer.addNewPanel(bsc);
     }
 
     public List<BSC> getBscList () {

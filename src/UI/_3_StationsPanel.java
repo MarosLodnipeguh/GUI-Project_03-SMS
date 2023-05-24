@@ -3,6 +3,7 @@ package UI;
 import Application.*;
 import Listeners.BSCListener;
 import Listeners.BTSListener;
+import ListenersExample.Main;
 import SMS.Message;
 
 import javax.swing.*;
@@ -33,9 +34,9 @@ public class _3_StationsPanel extends JPanel implements BTSListener, BSCListener
 
 //                BSCLayer layer = BSCManager.createNewBscLayer();
 
-
-
 //                BSCLayersContainer.add(layer.layer, getComponentCount()-1);
+                BSCManager.addLayer();
+                BSCLayersContainer.add(new BSCLayerUI(BSCManager.getBscLayerAt(BSCManager.getLastLayerNumber()) ) , getComponentCount()-1);
                 revalidate();
                 repaint();
             }
@@ -59,7 +60,14 @@ public class _3_StationsPanel extends JPanel implements BTSListener, BSCListener
 
         // BSC LAYERS:
         BSCLayersContainer = new JPanel();
-        BSCLayersContainer.add(BSCManager.getBscLayerUI(0) );
+//        BSCLayersContainer.add(BSCManager.getBscLayerUI(0) );
+
+
+        // rozdział:
+        for (BSCLayer l : BSCManager.getBscLayers()) {
+            BSCLayersContainer.add(new BSCLayerUI(l));
+        }
+
         JScrollPane BSCscroll = new JScrollPane(BSCLayersContainer);
         layersContainer.add(BSCscroll);
 

@@ -45,7 +45,7 @@ public class BSCManager implements BSCListener {
         return getLayerXbsc(x);
     }
 
-    public void addLayer () {
+    public static void addLayer () {
         bscLayers.add(new BSCLayer(lastLayerNumber));
         lastLayerNumber++;
     }
@@ -54,32 +54,20 @@ public class BSCManager implements BSCListener {
         return lastLayerNumber;
     }
 
-    public static BSCLayerUI getBscLayerUI (int i) {
-        return bscLayers.get(i).layer;
-    }
-
-    public static BSCLayer createNewBscLayer () {
-
-//        for (BSCLayer bscL : bscLayers) {
-//            bscL.setLastLayer(false);
-//        }
-
-        addLayer;
-
-        lastLayerNumber++;
-
-
-//        updateLastLayer();
-        return newLayer;
-    }
-
-//    public static void updateLastLayer () {
-//        lastLayer = bscLayers.size() - 1;
+//    public static BSCLayerUI getBscLayerUI (int i) {
+//        return bscLayers.get(i).layer;
 //    }
 
-//    public static int getLastLayer () {
-//        return lastLayer;
-//    }
+    public static List<BSCLayer> getBscLayers () {
+        return bscLayers;
+    }
+
+    public static BSCLayer getBscLayerAt (int index) {
+        return bscLayers.get(index);
+    }
+
+
+
 
     public static int getLayerNumber () {
         return bscLayers.size();

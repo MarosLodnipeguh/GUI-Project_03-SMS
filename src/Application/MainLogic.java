@@ -9,17 +9,19 @@ import java.util.List;
 public class MainLogic {
     
     private static List <VBD> vbdLayer;
-    private List <BSCLayer> bscLayer;
+    private List <BSCLayer> bscLayers;
     private List <VRD> vrdLayer;
 
     public MainLogic () {
         this.vbdLayer = new ArrayList<VBD>();
-        this.bscLayer = new ArrayList<BSCLayer>();
+        this.bscLayers = new ArrayList<BSCLayer>();
         this.vrdLayer = new ArrayList<VRD>();
 
         BTSManager btsManager = new BTSManager ();
         BSCManager bscManager = new BSCManager ();
         VRDManager vrdManager = new VRDManager ();
+
+//        bscLayers = bscManager.
 
     }
 
@@ -41,9 +43,7 @@ public class MainLogic {
 //        btsLayerBegin.add(bts);
     }
 
-    void addBSCLayer (BSCLayer bscLayer) { // wywoływane przez BSCManager
-        this.bscLayer.add(bscLayer);
-    }
+
 
     void addBTS2 (BTS bts) { // wywoływane przez BTSManager
 //        btsLayerEnd.add(bts);
