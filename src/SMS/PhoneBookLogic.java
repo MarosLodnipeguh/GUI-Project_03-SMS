@@ -10,7 +10,8 @@ public class PhoneBookLogic {
 
     public static String getRandomRecipent () throws NullRecipentException {
         if (recipentBook.size() == 0) {
-            throw new NullRecipentException();
+//            throw new NullRecipentException();
+            return null;
         }
         else {
             return recipentBook.get((int) (Math.random() * recipentBook.size()));

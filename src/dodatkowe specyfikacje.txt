@@ -54,3 +54,21 @@ kazda operacja miedzy logika a interfejsem i w druga strone ma isc bo eventach d
 
 createVBDevent ma sens wsm
 i tam wszystkie wartości vbd w tym evencie wpierdalam
+
+
+
+w moich kolekcjach w stacjach
+
+new collections.synchronized list
+
+thread save collections artykuł
+
+zaczynać lepiej od logiki zawsze
+a potem interfejs na jego podstawie tworzyć
+
+hash mapa do przechowywania bts i bsc w layerach
+tam jest .stream i szuka tego z najmniejszą ilością wiadomości
+
+synchronizuje watki po kolekcji thread save
+
+zoptymalizował to tak że left panel i right panel wspólne części mają w mypanel

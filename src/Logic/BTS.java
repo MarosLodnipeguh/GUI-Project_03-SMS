@@ -1,10 +1,12 @@
-package Application;
+package Logic;
 
 // Base Station
 
+import Handlers.BTSListener;
+import Handlers.UpdateStationPanelUIEvent;
+import SMS.InvalidRecipentException;
 import SMS.Message;
 import SMS.PhoneBookLogic;
-import UI.BTSPanel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +21,10 @@ public class BTS implements Runnable{
     private BSC connectedBSC;
     private VRD connectedVRD;
 
-    // UI:
-    public BTSPanel panel;
+    private int layerNumber;
     public BTSLayer layer;
+
+    private BTSListener listener;
 
 
     public BTS (BTSLayer layer) {
@@ -34,17 +37,20 @@ public class BTS implements Runnable{
 
         ProcessedMessages = 0;
 
+        this.layer = layer;
+        layerNumber = layer.getLayerNumber();
+
         connectedBSC = null;
         connectedVRD = null;
 
-        // UI:
-        panel = new BTSPanel(this);
+    }
 
-        this.layer = layer;
+    public void setListener(BTSListener listener) {
+        this.listener = listener;
     }
 
 
-    void addMessage(Message message) {
+    public void addMessage(Message message) {
         if (gatheredMessages.size() > 5) {
             isFull = true;
 //            System.out.println("BTS " + id + " is full");
@@ -65,8 +71,7 @@ public class BTS implements Runnable{
 
             if (gatheredMessages.size() > 0) {
 
-                panel.updateWaitingMessagesNumber(getWaitingMessages());
-                panel.updateProcessedMessagesNumber(getProcessedMessages());
+                listener.updateBTSPanel(new UpdateStationPanelUIEvent(this, this.id, this.getProcessedMessages(), this.WaitingMessages));
 
                 try {
 //                    System.out.println("BTS: " + id + " waiting for 3 seconds");
@@ -76,17 +81,23 @@ public class BTS implements Runnable{
                 }
 
 
-                if (!layer.isLastLayer()) {
+                if (layerNumber == 0) {
                     connectToBSC(BSCManager.getLayerXbsc(0)); // pierwsza wartswa BSC
                 }
                 else {
                     connectToVRD();
                 }
 
+
+//                try {
+//                    processNextMessage();
+//                } catch (InvalidRecipentException e) {
+//                    e.printStackTrace();
+//                }
+
                 processNextMessage();
 
-                panel.updateWaitingMessagesNumber(getWaitingMessages());
-                panel.updateProcessedMessagesNumber(getProcessedMessages());
+                listener.updateBTSPanel(new UpdateStationPanelUIEvent(this, this.id, this.getProcessedMessages(), this.WaitingMessages));
 
             } else {
                 try {
@@ -107,27 +118,32 @@ public class BTS implements Runnable{
     }
 
     public void connectToVRD () {
-        this.connectedVRD = VRDManager.getVRD(gatheredMessages.get(0).getRecipient());
+        this.connectedVRD = MainLogic.getVRD(gatheredMessages.get(0).getRecipient());
     }
 
     public void processNextMessage() {
         Message m = gatheredMessages.get(0);
 
-        // Przetwarzanie wiadomości...
-        if (connectedBSC != null) {
-            connectedBSC.addMessage(m);
-        } else if (connectedVRD != null) {
-            connectedVRD.receiveMessage(m);
-        } else {
-            System.out.println("BTS " + id + " is not connected to any BSC or VRD");
-        }
-//        System.out.println("BTS " + id + ": processed message ");
+        try {
+            // Przetwarzanie wiadomości...
+            if (connectedBSC != null) {
+                connectedBSC.addMessage(m);
+            } else if (connectedVRD != null) {
+                connectedVRD.addMessage(m);
+            } else {
+                throw new InvalidRecipentException();
+            }
 
-        gatheredMessages.remove(0);
-        WaitingMessages = gatheredMessages.size();
-        ProcessedMessages++;
-        isFull = false; // Aktualizacja flagi isFull
+            System.out.println("BTS " + id + ": processed message");
+            gatheredMessages.remove(0);
+            WaitingMessages = gatheredMessages.size();
+            ProcessedMessages++;
+            isFull = false; // Aktualizacja flagi isFull
+        } catch (InvalidRecipentException e) {
+            e.printStackTrace();
+        }
     }
+
 
 
 

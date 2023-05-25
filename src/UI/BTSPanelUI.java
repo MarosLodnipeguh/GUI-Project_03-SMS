@@ -1,17 +1,19 @@
 package UI;
 
-import Application.BTS;
+import Handlers.BTSListener;
+import Handlers.UpdateStationPanelUIEvent;
+import Logic.BTS;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class BTSPanel extends JPanel {
+public class BTSPanelUI extends JPanel implements BTSListener {
     private JLabel numberLabel;
     private JLabel processedMessagesNumber;
     private JLabel waitingMessagesNumber;
 
-    public BTSPanel (BTS bts) {
-        setPreferredSize(new Dimension(150, 75));
+    public BTSPanelUI (BTS bts) {
+        setPreferredSize(new Dimension(100, 75));
         setBorder(BorderFactory.createTitledBorder("BTS"));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -29,8 +31,27 @@ public class BTSPanel extends JPanel {
     public void updateProcessedMessagesNumber (int processedMessages) {
         SwingUtilities.invokeLater(() -> processedMessagesNumber.setText("Processed: " + processedMessages));
     }
-
     public void updateWaitingMessagesNumber (int waitingMessages) {
         SwingUtilities.invokeLater(() -> waitingMessagesNumber.setText("Waiting: " + waitingMessages));
     }
+    @Override
+    public void updateBTSPanel (UpdateStationPanelUIEvent evt) {
+        updateProcessedMessagesNumber(evt.getProcessedMessages());
+        updateWaitingMessagesNumber(evt.getWaitingMessages());
+    }
+
+
+
+
+
+    @Override
+    public void AddNewBTSLayerUI (BTSLayerUI ui) {
+
+    }
+
+    @Override
+    public void AddNewBTSPanelUI (BTSPanelUI ui) {
+
+    }
+
 }

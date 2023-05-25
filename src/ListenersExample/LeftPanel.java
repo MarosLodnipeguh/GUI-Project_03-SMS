@@ -38,7 +38,7 @@ public
 
     private ArrayList<ChangeColorListener> listeners = new ArrayList<>();
 
-    public void addChangeColorListener(ChangeColorListener listener){ // argument tutaj to klasa docelowa która nasłuchuje na event! w której sie coś stanie
+    public void addChangeColorListener(ChangeColorListener listener){ // argument tutaj to klasa docelowa która nasłuchuje na event! w której sie coś stanie i trafia do listy słuchaczy
         this.listeners.add(listener);
     }
 

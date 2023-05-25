@@ -1,8 +1,11 @@
-package Application;
+package Logic;
 
-import Listeners.BSCListener;
-import SMS.Message;
+
+import Handlers.BSCListener;
+import Handlers.NullListener;
+import Handlers.UpdateStationPanelUIEvent;
 import UI.BSCLayerUI;
+import UI.BSCPanelUI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,12 +15,18 @@ public class BSCManager implements BSCListener {
     private static List<BSCLayer> bscLayers;
     private static int lastLayerNumber;
 
+    private static BSCListener listener;
+
     public BSCManager () {
         bscLayers = new ArrayList<BSCLayer>();
-        lastLayerNumber = 0;
+        lastLayerNumber = -1;
+
+        listener = new NullListener();
+
 
         // stan uruchiemniowy:
-        addLayer();
+
+//        AddNewBSCLayer();
     }
 
     public static BSC getLayerXbsc (int x) {
@@ -41,22 +50,50 @@ public class BSCManager implements BSCListener {
         }
 
         // jeżeli w danej warstwie ilość SMS w każdym z BSC lub BTS jest większa od 5, automatycznie dodawany jest nowy BTS/BSC;
-        bscLayers.get(x).addBSC(new BSC(bscLayers.get(x)) );
+        bscLayers.get(x).newBSC();
         return getLayerXbsc(x);
     }
 
-    public static void addLayer () {
-        bscLayers.add(new BSCLayer(lastLayerNumber));
+
+    @Override
+    public void AddNewBSCLayer () {
         lastLayerNumber++;
+        BSCLayer layer = new BSCLayer(lastLayerNumber);
+        bscLayers.add(layer);
+
+        // UI:
+        BSCLayerUI layerUI = new BSCLayerUI(layer);
+        layer.setListener(layerUI);
+        AddNewBSCLayerUI(layerUI);
+        layer.newBSC();
+
     }
+
+    @Override
+    public void AddNewBSCLayerUI (BSCLayerUI ui) {
+        listener.AddNewBSCLayerUI(ui);
+//        System.out.println("Layer sent to: " + listener.getClass().getSimpleName());
+    }
+
+
+
 
     public static int getLastLayerNumber () {
         return lastLayerNumber;
     }
 
-//    public static BSCLayerUI getBscLayerUI (int i) {
-//        return bscLayers.get(i).layer;
-//    }
+    @Override
+    public void RemoveLastBSCLayer () {
+        bscLayers.get(getLastLayerNumber()).stopLayer();
+        bscLayers.remove(getLastLayerNumber());
+        lastLayerNumber--;
+
+    }
+
+    public void setListener (BSCListener listener) {
+        BSCManager.listener = listener;
+//        System.out.println("BSCManager has a listener now: " + listener.getClass().getSimpleName());
+    }
 
     public static List<BSCLayer> getBscLayers () {
         return bscLayers;
@@ -73,13 +110,24 @@ public class BSCManager implements BSCListener {
         return bscLayers.size();
     }
 
+
+
+
     @Override
-    public void onMessageReceived (BSC bsc, Message message) {
+    public void AddNewBSCPanelUI (BSCPanelUI ui) {
 
     }
 
+
+
+
+
     @Override
-    public void onMessageProcessed (BSC bsc, Message message) {
+    public void updateBSCPanel (UpdateStationPanelUIEvent evt) {
 
     }
+
+
+
+
 }

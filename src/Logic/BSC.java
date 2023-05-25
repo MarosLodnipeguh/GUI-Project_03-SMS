@@ -1,10 +1,11 @@
-package Application;
+package Logic;
 
 // Controller Station
 
+import Handlers.BSCListener;
+import Handlers.UpdateStationPanelUIEvent;
 import SMS.Message;
 import SMS.PhoneBookLogic;
-import UI.BSCPanel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,15 +19,10 @@ public class BSC implements Runnable {
     private int ProcessedMessages;
     private BSC connectedBSC;
     private BTS connectedBTS;
-
-
     private int layerNumber;
     public BSCLayer layer;
-
-    // UI:
-    public BSCPanel panel;
-
-
+    private BSCListener listener;
+    private volatile boolean running = true;
 
 
     public BSC (BSCLayer layer) {
@@ -44,22 +40,6 @@ public class BSC implements Runnable {
 
         connectedBSC = null;
         connectedBTS = null;
-//        BSCManager.updateLastLayer();
-
-        // UI:
-        panel = new BSCPanel(this);
-
-
-    }
-
-    void addMessage(Message message) {
-        if (gatheredMessages.size() > 5) {
-            isFull = true;
-        } else {
-            gatheredMessages.add(message);
-            WaitingMessages = gatheredMessages.size();
-//            System.out.println(gatheredMessages.size() + " messages in BSC " + id);
-        }
 
     }
 
@@ -67,12 +47,16 @@ public class BSC implements Runnable {
     public void run() {
         System.out.println("BSC: " + id + " started");
 
-        while (true) {
+        while (running) {
 
             if (gatheredMessages.size() > 0) {
 
-                panel.updateWaitingMessagesNumber(getWaitingMessages());
-                panel.updateProcessedMessagesNumber(getProcessedMessages());
+//                panel.updateWaitingMessagesNumber(getWaitingMessages());
+//                panel.updateProcessedMessagesNumber(getProcessedMessages());
+
+
+                UpdateStationPanelUIEvent evt = new UpdateStationPanelUIEvent(this, this.id, this.getProcessedMessages(), this.WaitingMessages);
+                listener.updateBSCPanel(evt);
 
                 try {
                     Thread.sleep((long) (Math.random() * 10000 + 5000)); // wait for random time (5-15s)
@@ -81,18 +65,18 @@ public class BSC implements Runnable {
                 }
 
 
-                if (/*!layer.isLastLayer()*/ layerNumber == BSCManager.getLastLayerNumber()) {
-                    connectToBTS(BTSManager.getLayer2BTS());
+                if (layerNumber == BSCManager.getLastLayerNumber()) {
+                    connectToBTS(BTSManager.getLayerXBTS(1));
 
                 }
                 else {
-                    connectToBSC(BSCManager.getLayerXbsc(/*BSCManager.getLayerNumber() -1*/ layerNumber + 1));
+                    connectToBSC(BSCManager.getLayerXbsc(layerNumber + 1));
                 }
 
                 processNextMessage();
 
-                panel.updateWaitingMessagesNumber(getWaitingMessages());
-                panel.updateProcessedMessagesNumber(getProcessedMessages());
+//                panel.updateWaitingMessagesNumber(getWaitingMessages());
+//                panel.updateProcessedMessagesNumber(getProcessedMessages());
 
             } else {
                 try {
@@ -101,8 +85,23 @@ public class BSC implements Runnable {
                     e.printStackTrace();
                 }
             }
-
         }
+        System.out.println("BSC: " + id + " stopped");
+    }
+
+    public void setListener(BSCListener listener) {
+        this.listener = listener;
+    }
+
+    public void addMessage (Message message) {
+        if (gatheredMessages.size() > 5) {
+            isFull = true;
+        } else {
+            gatheredMessages.add(message);
+            WaitingMessages = gatheredMessages.size();
+//            System.out.println(gatheredMessages.size() + " messages in BSC " + id);
+        }
+
     }
 
     public void connectToBSC (BSC bsc) {
@@ -122,7 +121,7 @@ public class BSC implements Runnable {
         } else if (connectedBTS != null) {
             connectedBTS.addMessage(m);
         } else {
-            System.out.println("BSC " + id + " is not connected to any BTS or BSC");
+            System.out.println("BSChandlers " + id + " is not connected to any BTS or BSC");
         }
 
 
@@ -132,13 +131,16 @@ public class BSC implements Runnable {
         isFull = false; // Aktualizacja flagi isFull
     }
 
+    public void stopBSC() {
+        running = false;
+    }
+
     public int getId () {
         return id;
     }
     public int getProcessedMessages () {
         return ProcessedMessages;
     }
-
     public int getWaitingMessages () {
         return WaitingMessages;
     }

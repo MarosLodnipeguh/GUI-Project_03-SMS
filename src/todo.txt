@@ -1,35 +1,21 @@
-v3.0 to będzie stable build
-gdzie wszystko już działa ale kod nie jest taki piękny jeszcze
-i nie ma pdu :/
+ważne:
+- nie stosować arraylist
+- ściganie się threadów i hash mapy
+- ewidentnie thready nie sa synchronizowane
+- zapisywanie do binarnego przy zamknieciu
 
-mój cel jest taki żeby można było zrobić new MainFrame bez tworzenia MainLogic
+- przy usuwaniu BSC Layerów wywala że index out of bounds
 
-
-jak są 3 warstwy BSC to coś sie pierdoli i 3 wartstwa nie dostaje wiadomości
-
-
-
-naprawić logike layerów BSC:
-każdy layer ma numer
-w BSCManager jest metoda która zwraca numer ostatniego layera
-w BSC jeśli layerNumber == BSCManager.getLastLayerNumber() to wysyłam do VRD
+InvalidRecipentException:
+- jak wywala InvalidRecipentException to ostatni layer BTS nie aktualizuje interefejsu
+- naprawic exception w ostatnim btsie jak juz dodam jakiegoś vrd, to zeby wysyłał normalnie
 
 
-logika / grafika:
-
-grafika rysuje tylko tyle elementów ile jest w mapie vbd na przykład
-przy użyciu gettera
-i przy użyciu getterow bierze wartości do wyświetlenia
-
-grafika bez istnienia logiki ma wyświetlić po prostu puste pole
-
-funkcja
-refresh VBD layers
-która w pętli odczytuje listę z logiki i dodaje do grafiki to co odczyta
-
-przycisk add wywołuje metodę w logice, która tworzy nowy w logice i wywołuje odświeżenie w grafice
-
-for every VBD in list add VBDpanel(od tych vbd z listy)
+least important:
+- test czy da sie stworzyć grafike bez inicjalizowania logiki?
+- phonebooklogic jako obiekt
+- pousuwać statici
 
 
-rozpisywać sobie wszystko ładnie przez implementacją żebym miał jasne punkty powiedziane..
+
+

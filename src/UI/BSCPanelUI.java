@@ -1,17 +1,19 @@
 package UI;
 
-import Application.BSC;
+import Logic.BSC;
+import Handlers.BSCListener;
+import Handlers.UpdateStationPanelUIEvent;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class BSCPanel extends JPanel {
+public class BSCPanelUI extends JPanel implements BSCListener {
     private JLabel numberLabel;
     private JLabel processedMessagesNumber;
     private JLabel waitingMessagesNumber;
 
-    public BSCPanel (BSC bsc) {
-        setPreferredSize(new Dimension(130, 75));
+    public BSCPanelUI (BSC bsc) {
+        setPreferredSize(new Dimension(100, 75));
         setBorder(BorderFactory.createTitledBorder("BSC"));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -29,9 +31,37 @@ public class BSCPanel extends JPanel {
     public void updateProcessedMessagesNumber (int processedMessages) {
         SwingUtilities.invokeLater(() -> processedMessagesNumber.setText("Processed: " + processedMessages));
     }
-
     public void updateWaitingMessagesNumber (int waitingMessages) {
         SwingUtilities.invokeLater(() -> waitingMessagesNumber.setText("Waiting: " + waitingMessages));
     }
+    @Override
+    public void updateBSCPanel (UpdateStationPanelUIEvent evt) {
+        updateProcessedMessagesNumber(evt.getProcessedMessages());
+        updateWaitingMessagesNumber(evt.getWaitingMessages());
+    }
+
+
+    @Override
+    public void AddNewBSCLayerUI (BSCLayerUI ui) {
+
+    }
+
+    @Override
+    public void AddNewBSCPanelUI (BSCPanelUI ui) {
+
+    }
+
+
+
+    @Override
+    public void AddNewBSCLayer () {
+
+    }
+
+    @Override
+    public void RemoveLastBSCLayer () {
+
+    }
+
 
 }

@@ -1,5 +1,5 @@
-import Application.MainLogic;
-import UI._1_MainFrame;
+import Logic.MainLogic;
+import UI.MainFrame;
 
 import javax.swing.*;
 import java.lang.reflect.InvocationTargetException;
@@ -10,47 +10,58 @@ public class MainApp {
 
 
 
+//        _1_MainFrame graphics = new _1_MainFrame();
+//        SwingUtilities.invokeLater((Runnable) graphics);
 
-        new MainLogic();
+//        SwingUtilities.invokeAndWait(_1_MainFrame::new);
 
-        SwingUtilities.invokeAndWait(_1_MainFrame::new);
+        SwingUtilities.invokeAndWait(() -> {
 
 
 
-//        SwingUtilities.invokeLater(new _1_MainFrame() {
-//            public void run() {
-//                createAndShowGUI();
-//            }
-//        });
-//    }
-//
-//    private static void createAndShowGUI() {
-//        // Tworzenie i konfiguracja interfejsu użytkownika
-//
-//        // Pętla główna, działająca w osobnym wątku
-//        Thread loopThread = new Thread(new _1_MainFrame() {
-//            public void run() {
-//                while (true) {
-//                    // Aktualizacja danych interfejsu użytkownika
-//
-//                    // Odświeżenie interfejsu w EDT
-//                    SwingUtilities.invokeLater(new _1_MainFrame() {
-//                        public void run() {
-//                            // Aktualizacja komponentów interfejsu
-//                        }
-//                    });
-//
-//                    // Poczekaj na chwilę przed następną iteracją pętli
-//                    try {
-//                        Thread.sleep(1000); // Przykładowy czas oczekiwania
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//        });
-//
-//        loopThread.start();
+            MainLogic logic = new MainLogic();
+
+
+            MainFrame graphics = new MainFrame();
+
+            logic.setVbdListener(graphics.getSender());
+            logic.getBscManager().setListener(graphics.getStations());
+            logic.getBtsManager().setListener(graphics.getStations());
+            logic.setVrdListener(graphics.getReceiver());
+
+
+            graphics.getSender().setListener(logic);
+            graphics.getStations().setBSClistener(logic.getBscManager());
+            graphics.getReceiver().setListener(logic);
+
+            // stan uruchomieniowy:
+            logic.getBtsManager().NewBTSLayer();
+            logic.getBscManager().AddNewBSCLayer();
+            logic.getBtsManager().NewBTSLayer();
+
+
+
+//            graphics.getStations().refresh();
+
+
+
+
+
+//            logic.setListenerForUI();
+
+//            SwingUtilities.invokeLater(() -> graphics.repaint());
+//            SwingUtilities.invokeLater(() -> graphics.revalidate());
+
+        });
+
+
+
+
+
+
+//        SwingUtilities.invokeAndWait();
+
+
     }
 }
 

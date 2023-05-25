@@ -1,6 +1,8 @@
 package UI;
 
-import Application.VBD;
+import Handlers.VBDListener;
+import Logic.VBD;
+import SMS.NullRecipentException;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -10,17 +12,23 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Hashtable;
 
-public class VBDPanel extends JPanel {
+public class VBDPanelUI extends JPanel implements VBDListener {
     private JLabel numberLabel;
     private JTextField deviceNumberTextField;
     private JComboBox<String> stateComboBox;
     private JLabel frequencyLabel;
     private JSlider frequencySlider;
-    private JButton stopButton;
+    private JButton removeButton;
+
+    private VBDListener LogicListener;
+    private VBDListener UIListener;
 
 
 
-    public VBDPanel (VBD vbd) {
+    public VBDPanelUI (VBD vbd) {
+
+
+
         setPreferredSize(new Dimension(210, 160));
         setBorder(BorderFactory.createTitledBorder("VBD"));
 
@@ -54,7 +62,7 @@ public class VBDPanel extends JPanel {
         frequencySlider.setPaintTicks(true);
         frequencySlider.setPaintLabels(true);
 
-        // Utworzenie opisów przedziału dla JSlider
+        // opisy przedziałów
         Hashtable<Integer, JLabel> labelTable = new Hashtable<>();
         labelTable.put(100, new JLabel("0.1s"));
         labelTable.put(3000, new JLabel("3s"));
@@ -63,16 +71,28 @@ public class VBDPanel extends JPanel {
         labelTable.put(10000, new JLabel("10s"));
         frequencySlider.setLabelTable(labelTable);
 
-        // Dodawanie słuchacza zmiany wartości JSlider
+
         frequencySlider.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 JSlider source = (JSlider) e.getSource();
                 double value = source.getValue();
                 frequencyLabel.setText("Frequency of sending: " + value/1000 + "s");
+                vbd.setSendFrequency(value);
             }
         });
         // ===================================== STOP BUTTON ===================================== //
-        stopButton = new JButton("Remove VBD");
+        removeButton = new JButton("Remove VBD");
+
+        removeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed (ActionEvent e) {
+                try {
+                    RemoveVBD(vbd);
+                } catch (NullRecipentException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
 
 
         add(numberLabel);
@@ -80,7 +100,40 @@ public class VBDPanel extends JPanel {
         add(stateComboBox);
         add(frequencyLabel);
         add(frequencySlider);
-        add(stopButton);
+        add(removeButton);
 
     }
+
+    public void setLogicListener (VBDListener listenerLogic) {
+        this.LogicListener = listenerLogic;
+    }
+
+    public void setUIListener (VBDListener UIListener) {
+        this.UIListener = UIListener;
+    }
+
+    @Override
+    public void RemoveVBD (VBD vbd) {
+        LogicListener.RemoveVBD(vbd);
+        RemoveVBDPanelUI(this);
+    }
+
+    @Override
+    public void RemoveVBDPanelUI (VBDPanelUI ui) {
+        UIListener.RemoveVBDPanelUI(ui);
+    }
+
+
+
+    @Override
+    public void AddNewVBDPanelUI (VBDPanelUI ui) {
+
+    }
+
+    @Override
+    public void AddNewVBD (String messageText) {
+
+    }
+
+
 }
