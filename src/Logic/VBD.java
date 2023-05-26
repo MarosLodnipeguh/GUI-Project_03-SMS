@@ -56,8 +56,10 @@ public class VBD implements Runnable {
 
                     // SEND MESSAGE:
                     connectToBTS(BTSManager.getLayerXBTS(0));
-                    connectedBTS.addMessage(message);
+                    connectedBTS.addMessage(messageInPDU);
                     sentMessages.incrementAndGet();
+
+                    System.out.println("VBD: " + number + " sent message to: " + recipient);
 
                     try {
                         Thread.sleep((long) sendFrequency);

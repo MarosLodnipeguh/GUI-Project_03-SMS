@@ -54,26 +54,50 @@ public class Message { // obiekt przesyłany
     }
 
     private String convertToSemiOctet(int number) {
-        String numberString = String.valueOf(number);
-        StringBuilder semiOctetBuilder = new StringBuilder();
+//        String numberString = String.valueOf(number);
+//        StringBuilder semiOctetBuilder = new StringBuilder();
+//
+//        for (int i = 0; i < numberString.length(); i += 2) { // bierze 2 liczby numeru
+//            String digit = numberString.substring(i, i + 2);
+//            semiOctetBuilder.append(String.format("%02X", Integer.parseInt(digit))); // dodaje 2 liczby numeru jako 2 znaki HEX
+//        }
+//
+//        return semiOctetBuilder.toString();
 
-        for (int i = 0; i < numberString.length(); i += 2) { // bierze 2 liczby numeru
-            String digit = numberString.substring(i, i + 2);
-            semiOctetBuilder.append(String.format("%02X", Integer.parseInt(digit))); // dodaje 2 liczby numeru jako 2 znaki HEX
+        StringBuilder hexBuilder = new StringBuilder();
+        String numberString = String.valueOf(number);
+
+        // Dopisz zera na początku, jeśli liczba cyfr jest nieparzysta
+        if (numberString.length() % 2 != 0) {
+            numberString = "0" + numberString;
         }
 
-        return semiOctetBuilder.toString();
+        // Konwertuj liczby na pary heksadecymalne
+        for (int i = 0; i < numberString.length(); i += 2) {
+            String digitPair = numberString.substring(i, i + 2);
+            int digitValue = Integer.parseInt(digitPair);
+            String hexValue = String.format("%02X", digitValue);
+            hexBuilder.append(hexValue);
+        }
+
+        return hexBuilder.toString();
     }
 
     private String convertTo7BitDefaultAlphabet(String text) {
         StringBuilder pduBuilder = new StringBuilder();
-        byte[] bytes = text.getBytes();
+        if (text != null) {
+            byte[] bytes = text.getBytes();
 
-        for (byte b : bytes) {
-            pduBuilder.append(String.format("%02X", b)); // formatuje Bajt jako 2 znaki HEX
+            for (byte b : bytes) {
+                pduBuilder.append(String.format("%02X", b)); // formatuje Bajt jako 2 znaki HEX
+            }
+
+            return pduBuilder.toString();
+
+        } else {
+            return "00";
         }
 
-        return pduBuilder.toString();
     }
 
 

@@ -7,12 +7,11 @@ import SMS.Message;
 import SMS.PhoneBookLogic;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class BTS implements Runnable {
     private int id;
-    private final ConcurrentLinkedQueue<Message> gatheredMessages;
+    private final ConcurrentLinkedQueue<String> gatheredMessages;
     private AtomicInteger waitingMessages;
     private volatile boolean isFull;
     private AtomicInteger processedMessages;
@@ -67,7 +66,7 @@ public class BTS implements Runnable {
         System.out.println("BSC: " + id + " stopped");
     }
 
-    public void addMessage(Message message) {
+    public void addMessage(String message) {
         synchronized (lock) {
             gatheredMessages.add(message);
             waitingMessages.incrementAndGet();
@@ -90,14 +89,14 @@ public class BTS implements Runnable {
         }
     }
 
-    public synchronized void processNextMessage() {
+    public void processNextMessage() {
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        Message m = null;
+        String m = null;
 
         synchronized (gatheredMessages) {
             if (!gatheredMessages.isEmpty()) {
@@ -116,7 +115,9 @@ public class BTS implements Runnable {
             }
         } else {
             synchronized (MainLogic.class) {
-                connectToVRD(MainLogic.getVRD(m.getRecipient()));
+                String recipent = decodeRecipientFromPDU(m);
+                int recipentInt = Integer.parseInt(recipent.substring(0, 1));
+                connectToVRD(MainLogic.getVRD(recipentInt));
             }
         }
 
@@ -159,5 +160,32 @@ public class BTS implements Runnable {
 
     public void stopBTS () {
         running = false;
+    }
+
+    // ==================================================== PDU DECODING =============================================================
+
+    public static String decodeRecipientFromPDU(String pdu) {
+        // PDU length should be even
+        if (pdu.length() % 2 != 0) {
+            throw new IllegalArgumentException("Invalid PDU length");
+        }
+
+        // Skip the first octet (PDU type)
+        int startIndex = 2;
+
+        // Check if the second nibble indicates the length of the recipient number
+        int secondNibble = Integer.parseInt(pdu.substring(1, 2), 16);
+        if (secondNibble % 2 == 1) {
+            startIndex += 1;
+        }
+
+        // Extract the recipient number from the PDU
+        StringBuilder recipientBuilder = new StringBuilder();
+        for (int i = startIndex; i < pdu.length(); i += 2) {
+            String semiOctet = pdu.substring(i, i + 2);
+            recipientBuilder.append(Integer.parseInt(semiOctet, 16));
+        }
+
+        return recipientBuilder.toString();
     }
 }

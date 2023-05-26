@@ -3,7 +3,6 @@ package Logic;
 // Virtual Receiver Device (Receiver)
 
 import Handlers.VRDListener;
-import SMS.Message;
 import SMS.PhoneBookLogic;
 import UI.VRDPanelUI;
 
@@ -15,7 +14,7 @@ import static SMS.PhoneBookLogic.recipientBook;
 
 public class VRD implements Runnable, VRDListener {
     private final int number;
-    private final ConcurrentLinkedQueue <Message> receivedMessages;
+    private final ConcurrentLinkedQueue<String> receivedMessages;
     private boolean autoDelete;
     private VRDListener listener;
     private volatile boolean running = true;
@@ -23,7 +22,7 @@ public class VRD implements Runnable, VRDListener {
 
     public VRD () {
         this.number = PhoneBookLogic.generateNumber();
-        this.receivedMessages = new ConcurrentLinkedQueue <Message>();
+        this.receivedMessages = new ConcurrentLinkedQueue<String>();
         this.autoDelete = false;
 
         phoneBook.add(number);
@@ -69,7 +68,7 @@ public class VRD implements Runnable, VRDListener {
 
 
 
-    public synchronized void addMessage(Message message) {
+    public synchronized void addMessage(String message) {
         receivedMessages.add(message);
         UpdateVRDPanelUI(receivedMessagesCount());
         System.out.println("VRD: " + number + " received message ");

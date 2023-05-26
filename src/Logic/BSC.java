@@ -2,7 +2,6 @@ package Logic;
 
 import Handlers.BSCListener;
 import Handlers.UpdateStationPanelUIEvent;
-import SMS.Message;
 import SMS.PhoneBookLogic;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -11,7 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class BSC implements Runnable {
 
     private int id;
-    private ConcurrentLinkedQueue<Message> gatheredMessages;
+    private ConcurrentLinkedQueue<String> gatheredMessages;
     private AtomicInteger waitingMessages;
     private volatile boolean isFull;
     private AtomicInteger processedMessages;
@@ -27,7 +26,7 @@ public class BSC implements Runnable {
         this.id = PhoneBookLogic.StationsCounter;
         PhoneBookLogic.StationsCounter++;
 
-        gatheredMessages = new ConcurrentLinkedQueue<>();
+        gatheredMessages = new ConcurrentLinkedQueue<String>();
         waitingMessages = new AtomicInteger(0);
         isFull = false;
         processedMessages = new AtomicInteger(0);
@@ -65,7 +64,7 @@ public class BSC implements Runnable {
         System.out.println("BSC: " + id + " stopped");
     }
 
-    public void addMessage(Message message) {
+    public void addMessage(String message) {
         synchronized (lock) {
             gatheredMessages.add(message);
             waitingMessages.incrementAndGet();
@@ -88,14 +87,14 @@ public class BSC implements Runnable {
         }
     }
 
-    public synchronized void processNextMessage() {
+    public void processNextMessage() {
         try {
             Thread.sleep((long) (Math.random() * 10000 + 5000)); // wait for random time (5-15s)
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        Message m;
+        String m;
 
         synchronized (lock) {
             if (!gatheredMessages.isEmpty()) {
@@ -134,7 +133,7 @@ public class BSC implements Runnable {
     public void InstantlyPassAllMessages() {
         synchronized (lock) {
             isFull = true;
-            for (Message m : gatheredMessages) {
+            for (String m : gatheredMessages) {
                 if (layerNumber != BSCManager.getLastLayerNumber()) { // not last layer - pass to next BSC
                     connectToBSC(BSCManager.getLayerXbsc(layerNumber + 1));
                 } else { // last layer - pass to BTS
@@ -164,9 +163,7 @@ public class BSC implements Runnable {
     }
 
     public void setListener(BSCListener listener) {
-        synchronized (lock) {
             this.listener = listener;
-        }
     }
 
     public int getId() {

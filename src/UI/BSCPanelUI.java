@@ -35,7 +35,7 @@ public class BSCPanelUI extends JPanel implements BSCListener {
         SwingUtilities.invokeLater(() -> waitingMessagesNumber.setText("Waiting: " + waitingMessages));
     }
     @Override
-    public void updateBSCPanel (UpdateStationPanelUIEvent evt) {
+    public synchronized void updateBSCPanel (UpdateStationPanelUIEvent evt) {
         updateProcessedMessagesNumber(evt.getProcessedMessages());
         updateWaitingMessagesNumber(evt.getWaitingMessages());
     }
