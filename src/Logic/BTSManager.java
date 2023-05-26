@@ -23,7 +23,7 @@ public class BTSManager implements BTSListener {
         listener = new NullListener();
     }
 
-    public synchronized static BTS getLayerXBTS (int x) {
+    public /*synchronized*/ static BTS getLayerXBTS (int x) {
 
         // wybierz ten BTS z warstwy, który zawiera najmniej SMSów:
         BTS selectedBTS = null;
@@ -49,7 +49,7 @@ public class BTSManager implements BTSListener {
     }
 
 
-    public synchronized void NewBTSLayer () {
+    public /*synchronized*/ void NewBTSLayer () {
         BTSLayer layer = new BTSLayer(lastLayerNumber);
         lastLayerNumber++;
         btsLayers.add(layer);

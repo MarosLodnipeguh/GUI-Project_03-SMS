@@ -22,7 +22,7 @@ public class BSCLayer implements BSCListener {
         this.listener = new NullListener();
     }
 
-    public synchronized void newBSC () {
+    public /*synchronized*/ void newBSC () {
         BSC bsc = new BSC(this);
         bscList.add(bsc);
 
@@ -54,7 +54,7 @@ public class BSCLayer implements BSCListener {
         return layerNumber;
     }
 
-    public synchronized void stopLayer () {
+    public /*synchronized*/ void stopLayer () {
         for (BSC bsc : bscList) {
             bsc.stopBSC();
         }

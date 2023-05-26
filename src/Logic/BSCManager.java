@@ -22,7 +22,7 @@ public class BSCManager implements BSCListener {
         listener = new NullListener();
     }
 
-    public static synchronized BSC getLayerXbsc (int x) {
+    public static /*synchronized*/ BSC getLayerXbsc (int x) {
         // Wybierz ten BSC z warstwy, który zawiera najmniej SMSów:
         BSC selectedBSC = null;
         int minMessages = Integer.MAX_VALUE;
@@ -43,7 +43,7 @@ public class BSCManager implements BSCListener {
     }
 
     @Override
-    public synchronized void AddNewBSCLayer () {
+    public /*synchronized*/ void AddNewBSCLayer () {
         lastLayerNumber++;
         BSCLayer layer = new BSCLayer(lastLayerNumber);
         bscLayers.add(layer);
@@ -60,12 +60,12 @@ public class BSCManager implements BSCListener {
         listener.AddNewBSCLayerUI(ui);
     }
 
-    public synchronized static int getLastLayerNumber () {
+    public /*synchronized*/ static int getLastLayerNumber () {
         return lastLayerNumber;
     }
 
     @Override
-    public synchronized void RemoveLastBSCLayer () {
+    public /*synchronized*/ void RemoveLastBSCLayer () {
         if (!bscLayers.isEmpty()) {
             bscLayers.get(getLastLayerNumber()).stopLayer();
             bscLayers.remove(getLastLayerNumber());

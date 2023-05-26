@@ -36,7 +36,7 @@ public class MainLogic implements VBDListener, VRDListener {
 
     // ======================================================= VBD =======================================================
     @Override
-    public synchronized void AddNewVBD (String messageText) {
+    public /*synchronized*/ void AddNewVBD (String messageText) {
         VBD vbd = new VBD(messageText);
         VBDs.add(vbd);
 
@@ -55,14 +55,14 @@ public class MainLogic implements VBDListener, VRDListener {
     }
 
     @Override
-    public synchronized void RemoveVBD (VBD vbd) {
+    public /*synchronized*/ void RemoveVBD (VBD vbd) {
         vbd.stopVBD();
         VBDs.remove(vbd);
     }
 
     // ======================================================= VRD =======================================================
     @Override
-    public synchronized void AddNewVRD () {
+    public /*synchronized*/ void AddNewVRD () {
         VRD vrd = new VRD();
         VRDs.add(vrd);
 
@@ -82,7 +82,7 @@ public class MainLogic implements VBDListener, VRDListener {
     }
 
     @Override
-    public synchronized void RemoveVRD (VRD vrd) {
+    public /*synchronized*/ void RemoveVRD (VRD vrd) {
         vrd.stopVRD();
         VRDs.remove(vrd);
     }
@@ -98,11 +98,11 @@ public class MainLogic implements VBDListener, VRDListener {
         return bscManager;
     }
 
-    public synchronized void setVbdListener (VBDListener vbdListener) {
+    public /*synchronized*/ void setVbdListener (VBDListener vbdListener) {
         this.vbdListener = vbdListener;
     }
 
-    public synchronized void setVrdListener (VRDListener vrdListener) {
+    public /*synchronized*/ void setVrdListener (VRDListener vrdListener) {
         this.vrdListener = vrdListener;
     }
 

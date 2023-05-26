@@ -22,7 +22,7 @@ public class BTSLayer implements BTSListener {
         this.listener = new NullListener();
     }
 
-    public synchronized void newBTS () {
+    public /*synchronized*/ void newBTS () {
         BTS bts = new BTS(this);
         btsList.add(bts);
 

@@ -14,8 +14,32 @@ public class MainApp {
 
 //            startLogic();
 
-            startLogicAndGraphics();
+//            startLogicAndGraphics();
 
+            MainLogic logic = new MainLogic();
+
+            MainFrame graphics = new MainFrame();
+
+            // set Logic Listeners to send events to UI
+            logic.setVbdListener(graphics.getSender());
+            logic.getBscManager().setListener(graphics.getStations());
+            logic.getBtsManager().setListener(graphics.getStations());
+            logic.setVrdListener(graphics.getReceiver());
+
+            // set UI Listeners to send events to Logic
+            graphics.getSender().setListener(logic);
+            graphics.getStations().setBSClistener(logic.getBscManager());
+            graphics.getReceiver().setListener(logic);
+
+            // stan uruchomieniowy:
+            logic.getBtsManager().NewBTSLayer();
+            logic.getBscManager().AddNewBSCLayer();
+            logic.getBtsManager().NewBTSLayer();
+
+            // ======================================================= ON APPLICATION CLOSE =======================================================
+            graphics.addFunction(logic::stopAllThreads);
+            graphics.addFunction(logic::writeVBDsDataToFile);
+            graphics.callFunctions();
         });
 
     }

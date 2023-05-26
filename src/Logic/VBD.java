@@ -21,7 +21,7 @@ public class VBD implements Runnable {
     private double sendFrequency;
     private BTS connectedBTS;
     private volatile boolean running = true;
-    private final Object lock;
+//    private final Object lock;
 
 
     public VBD (String messageText) {
@@ -40,14 +40,14 @@ public class VBD implements Runnable {
 
         sentMessages = new AtomicInteger(0);
 
-        lock = new Object();
+//        lock = new Object();
     }
 
     @Override
-    public synchronized void run () {
+    public /*synchronized*/ void run () {
 
         while (running) {
-            synchronized (lock) {
+//            synchronized (lock) {
                 if (isSending) {
                     // GENERATE MESSAGE:
                     recipient = PhoneBookLogic.getRandomRecipient();
@@ -71,18 +71,19 @@ public class VBD implements Runnable {
 
                 else {
                     try {
-                        lock.wait(100);
+//                        lock.wait(100);
+                        Thread.sleep(100);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
-            }
+//            }
 
         }
         System.out.println("VBD: " + number + " stopped");
     }
 
-    public synchronized void connectToBTS (BTS bts) {
+    public /*synchronized*/ void connectToBTS (BTS bts) {
         this.connectedBTS = bts;
     }
 
@@ -103,7 +104,7 @@ public class VBD implements Runnable {
         return number;
     }
 
-    public synchronized void writeAllMessagesToFile (String filename) {
+    public /*synchronized*/ void writeAllMessagesToFile (String filename) {
 
         try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filename, true))) {
 

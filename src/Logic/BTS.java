@@ -21,7 +21,7 @@ public class BTS implements Runnable {
     public BTSLayer layer;
     private BTSListener listener;
     private volatile boolean running = true;
-    private final Object lock;
+//    private final Object lock;
 
 
     public BTS(BTSLayer layer) {
@@ -39,7 +39,7 @@ public class BTS implements Runnable {
         connectedBSC = null;
         connectedVRD = null;
 
-        lock = new Object();
+//        lock = new Object();
     }
 
     @Override
@@ -47,7 +47,7 @@ public class BTS implements Runnable {
         System.out.println("BTS: " + id + " started");
 
         while (running) {
-            synchronized (lock) {
+//            synchronized (lock) {
 
                 if (!gatheredMessages.isEmpty()) {
                     listener.updateBTSPanel(new UpdateStationPanelUIEvent(this, this.id, this.getProcessedMessages(), this.getWaitingMessages()));
@@ -55,38 +55,39 @@ public class BTS implements Runnable {
                     listener.updateBTSPanel(new UpdateStationPanelUIEvent(this, this.id, this.getProcessedMessages(), this.getWaitingMessages()));
                 } else {
                     try {
-                        lock.wait(100); // czekaj przy braku wiadomości
+//                        lock.wait(100); // czekaj przy braku wiadomości
+                        Thread.sleep(100);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
-            }
+//            }
 
         }
         System.out.println("BSC: " + id + " stopped");
     }
 
     public void addMessage(String message) {
-        synchronized (lock) {
+//        synchronized (lock) {
             gatheredMessages.add(message);
             waitingMessages.incrementAndGet();
 
             if (gatheredMessages.size() > 5) {
                 isFull = true;
             }
-        }
+//        }
     }
 
     public void connectToBSC(BSC bsc) {
-        synchronized (lock) {
+//        synchronized (lock) {
             this.connectedBSC = bsc;
-        }
+//        }
     }
 
     public void connectToVRD(VRD vrd) {
-        synchronized (lock) {
+//        synchronized (lock) {
             this.connectedVRD = vrd;
-        }
+//        }
     }
 
     public void processNextMessage() {
@@ -110,18 +111,18 @@ public class BTS implements Runnable {
         }
 
         if (layerNumber == 0) {
-            synchronized (BSCManager.class) {
+//            synchronized (BSCManager.class) {
                 connectToBSC(BSCManager.getLayerXbsc(0));
-            }
+//            }
         } else {
-            synchronized (MainLogic.class) {
+//            synchronized (MainLogic.class) {
                 String recipent = decodeRecipientFromPDU(m);
                 int recipentInt = Integer.parseInt(recipent.substring(0, 1));
                 connectToVRD(MainLogic.getVRD(recipentInt));
-            }
+//            }
         }
 
-        synchronized (lock) {
+//        synchronized (lock) {
             try {
                 if (connectedBSC != null) {
                     connectedBSC.addMessage(m);
@@ -135,7 +136,7 @@ public class BTS implements Runnable {
             } catch (InvalidRecipientException e) {
                 e.printStackTrace();
             }
-        }
+//        }
     }
 
     public void setListener(BTSListener listener) {

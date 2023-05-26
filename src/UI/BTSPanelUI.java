@@ -35,7 +35,7 @@ public class BTSPanelUI extends JPanel implements BTSListener {
         SwingUtilities.invokeLater(() -> waitingMessagesNumber.setText("Waiting: " + waitingMessages));
     }
     @Override
-    public synchronized void updateBTSPanel (UpdateStationPanelUIEvent evt) {
+    public /*synchronized*/ void updateBTSPanel (UpdateStationPanelUIEvent evt) {
         updateProcessedMessagesNumber(evt.getProcessedMessages());
         updateWaitingMessagesNumber(evt.getWaitingMessages());
     }

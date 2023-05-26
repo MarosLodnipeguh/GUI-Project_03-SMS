@@ -18,7 +18,7 @@ public class VRD implements Runnable, VRDListener {
     private boolean autoDelete;
     private VRDListener listener;
     private volatile boolean running = true;
-    private final Object lock;
+//    private final Object lock;
 
     public VRD () {
         this.number = PhoneBookLogic.generateNumber();
@@ -31,7 +31,7 @@ public class VRD implements Runnable, VRDListener {
         //DEBUG:
         System.out.println("VRD created with number: " + number);
 
-        lock = new Object();
+//        lock = new Object();
     }
 
     @Override
@@ -39,7 +39,7 @@ public class VRD implements Runnable, VRDListener {
         System.out.println("VRD: " + number + " started");
 
         while (running) {
-            synchronized (lock) {
+//            synchronized (lock) {
                 if (autoDelete) {
 
                     receivedMessages.clear();
@@ -52,12 +52,13 @@ public class VRD implements Runnable, VRDListener {
                     }
                 } else {
                     try {
-                        lock.wait(100);
+//                        lock.wait(100);
+                        Thread.sleep(100);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
-            }
+//            }
 
         }
         System.out.println("VRD: " + number + " stopped");
@@ -68,16 +69,16 @@ public class VRD implements Runnable, VRDListener {
 
 
 
-    public synchronized void addMessage(String message) {
+    public /*synchronized*/ void addMessage(String message) {
         receivedMessages.add(message);
         UpdateVRDPanelUI(receivedMessagesCount());
         System.out.println("VRD: " + number + " received message ");
     }
 
     public int receivedMessagesCount() {
-        synchronized (receivedMessages) {
+//        synchronized (receivedMessages) {
             return receivedMessages.size();
-        }
+//        }
     }
 
     public int getNumber () {
@@ -90,9 +91,9 @@ public class VRD implements Runnable, VRDListener {
 
     @Override
     public void UpdateVRDPanelUI(int receivedCount) {
-        synchronized (listener) {
+//        synchronized (listener) {
             listener.UpdateVRDPanelUI(receivedCount);
-        }
+//        }
     }
 
     public void stopVRD () {
