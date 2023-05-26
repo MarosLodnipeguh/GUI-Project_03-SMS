@@ -20,7 +20,7 @@ public class BSC implements Runnable {
     public BSCLayer layer;
     private BSCListener listener;
     private volatile boolean running = true;
-//    private final Object lock;
+    private final Object lock;
 
     public BSC(BSCLayer layer) {
         this.id = PhoneBookLogic.StationsCounter;
@@ -37,7 +37,7 @@ public class BSC implements Runnable {
         connectedBSC = null;
         connectedBTS = null;
 
-//        lock = new Object();
+        lock = new Object();
     }
 
     @Override
@@ -46,20 +46,20 @@ public class BSC implements Runnable {
 
         while (running) {
 
-//            synchronized (lock) {
+            synchronized (lock) {
                 if (!gatheredMessages.isEmpty()) {
                     listener.updateBSCPanel(new UpdateStationPanelUIEvent(this, this.id, this.getProcessedMessages(), this.getWaitingMessages()));
                     processNextMessage();
                     listener.updateBSCPanel(new UpdateStationPanelUIEvent(this, this.id, this.getProcessedMessages(), this.getWaitingMessages()));
                 } else {
                     try {
-//                        lock.wait(100); // czekaj przy braku wiadomości
-                        Thread.sleep(100);
+                        lock.wait(100); // czekaj przy braku wiadomości
+//                        Thread.sleep(100);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
-//            }
+            }
 
         }
         System.out.println("BSC: " + id + " stopped");
@@ -70,7 +70,10 @@ public class BSC implements Runnable {
             gatheredMessages.add(message);
             waitingMessages.incrementAndGet();
 
-            if (gatheredMessages.size() > 5) {
+            listener.updateBSCPanel(new UpdateStationPanelUIEvent(this, this.id, this.getProcessedMessages(), this.getWaitingMessages()));
+
+
+        if (gatheredMessages.size() > 5) {
                 isFull = true;
             }
 //        }
@@ -97,7 +100,7 @@ public class BSC implements Runnable {
 
         String m;
 
-//        synchronized (lock) {
+        synchronized (lock) { // gatheredMessages?
             if (!gatheredMessages.isEmpty()) {
                 m = gatheredMessages.poll();
                 waitingMessages.decrementAndGet();
@@ -128,7 +131,7 @@ public class BSC implements Runnable {
             } else {
                 System.out.println("BSChandlers " + id + " is not connected to any BTS or BSC");
             }
-//        }
+        }
     }
 
     public void InstantlyPassAllMessages() {

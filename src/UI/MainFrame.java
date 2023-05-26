@@ -55,7 +55,6 @@ public class MainFrame extends JFrame {
     public void callFunctions () {
         for (logicToGraphics function : functions) {
             function.execute();
-            System.out.println("Function called");
         }
     }
 

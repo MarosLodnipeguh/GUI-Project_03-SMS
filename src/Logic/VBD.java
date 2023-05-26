@@ -49,17 +49,25 @@ public class VBD implements Runnable {
         while (running) {
 //            synchronized (lock) {
                 if (isSending) {
+
                     // GENERATE MESSAGE:
                     recipient = PhoneBookLogic.getRandomRecipient();
                     Message message = new Message(this.number, recipient, this.messageText);
-                    String messageInPDU = message.encodeToPDU();
+
+                    // ENDODE MESSAGE:
+                    String messageInHexString = "";
+
+                    if (messageText != null) {
+                        byte[] messageInBytes = message.encodeMessage(message);
+                        messageInHexString = byteArrayToHexString(messageInBytes);
+                    }
 
                     // SEND MESSAGE:
                     connectToBTS(BTSManager.getLayerXBTS(0));
-                    connectedBTS.addMessage(messageInPDU);
+                    connectedBTS.addMessage(messageInHexString);
                     sentMessages.incrementAndGet();
 
-                    System.out.println("VBD: " + number + " sent message to: " + recipient);
+//                    System.out.println("VBD: " + number + " sent message to: " + recipient);
 
                     try {
                         Thread.sleep((long) sendFrequency);
@@ -104,6 +112,8 @@ public class VBD implements Runnable {
         return number;
     }
 
+
+
     public /*synchronized*/ void writeAllMessagesToFile (String filename) {
 
         try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filename, true))) {
@@ -118,6 +128,16 @@ public class VBD implements Runnable {
             System.out.println("Błąd zapisu pliku: " + e.getMessage());
         }
 
+    }
+
+
+
+    public String byteArrayToHexString(byte[] byteArray) {
+        StringBuilder hexString = new StringBuilder();
+        for (byte b : byteArray) {
+            hexString.append(String.format("%02X", b));
+        }
+        return hexString.toString();
     }
 
 

@@ -72,7 +72,7 @@ public class VRD implements Runnable, VRDListener {
     public /*synchronized*/ void addMessage(String message) {
         receivedMessages.add(message);
         UpdateVRDPanelUI(receivedMessagesCount());
-        System.out.println("VRD: " + number + " received message ");
+//        System.out.println("VRD: " + number + " received message ");
     }
 
     public int receivedMessagesCount() {

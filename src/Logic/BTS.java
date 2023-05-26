@@ -21,7 +21,7 @@ public class BTS implements Runnable {
     public BTSLayer layer;
     private BTSListener listener;
     private volatile boolean running = true;
-//    private final Object lock;
+    private final Object lock;
 
 
     public BTS(BTSLayer layer) {
@@ -39,7 +39,7 @@ public class BTS implements Runnable {
         connectedBSC = null;
         connectedVRD = null;
 
-//        lock = new Object();
+        lock = new Object();
     }
 
     @Override
@@ -47,7 +47,7 @@ public class BTS implements Runnable {
         System.out.println("BTS: " + id + " started");
 
         while (running) {
-//            synchronized (lock) {
+            synchronized (lock) {
 
                 if (!gatheredMessages.isEmpty()) {
                     listener.updateBTSPanel(new UpdateStationPanelUIEvent(this, this.id, this.getProcessedMessages(), this.getWaitingMessages()));
@@ -55,16 +55,16 @@ public class BTS implements Runnable {
                     listener.updateBTSPanel(new UpdateStationPanelUIEvent(this, this.id, this.getProcessedMessages(), this.getWaitingMessages()));
                 } else {
                     try {
-//                        lock.wait(100); // czekaj przy braku wiadomości
-                        Thread.sleep(100);
+                        lock.wait(100); // czekaj przy braku wiadomości
+//                        Thread.sleep(100);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
-//            }
+            }
 
         }
-        System.out.println("BSC: " + id + " stopped");
+        System.out.println("BTS: " + id + " stopped");
     }
 
     public void addMessage(String message) {
@@ -72,7 +72,10 @@ public class BTS implements Runnable {
             gatheredMessages.add(message);
             waitingMessages.incrementAndGet();
 
-            if (gatheredMessages.size() > 5) {
+            listener.updateBTSPanel(new UpdateStationPanelUIEvent(this, this.id, this.getProcessedMessages(), this.getWaitingMessages()));
+
+
+        if (gatheredMessages.size() > 5) {
                 isFull = true;
             }
 //        }
@@ -99,7 +102,7 @@ public class BTS implements Runnable {
 
         String m = null;
 
-        synchronized (gatheredMessages) {
+        synchronized (lock) { // gatheredMessages?
             if (!gatheredMessages.isEmpty()) {
                 m = gatheredMessages.poll();
                 waitingMessages.decrementAndGet();
@@ -116,9 +119,12 @@ public class BTS implements Runnable {
 //            }
         } else {
 //            synchronized (MainLogic.class) {
-                String recipent = decodeRecipientFromPDU(m);
-                int recipentInt = Integer.parseInt(recipent.substring(0, 1));
-                connectToVRD(MainLogic.getVRD(recipentInt));
+
+                int recipent = decodeRecipient(m);
+
+
+
+                connectToVRD(MainLogic.getVRD(recipent));
 //            }
         }
 
@@ -165,28 +171,64 @@ public class BTS implements Runnable {
 
     // ==================================================== PDU DECODING =============================================================
 
-    public static String decodeRecipientFromPDU(String pdu) {
-        // PDU length should be even
-        if (pdu.length() % 2 != 0) {
-            throw new IllegalArgumentException("Invalid PDU length");
-        }
+//    public static String decodeRecipientFromPDU(String pdu) {
+//        // PDU length should be even
+//        if (pdu.length() % 2 != 0) {
+//            throw new IllegalArgumentException("Invalid PDU length");
+//        }
+//
+//        // Skip the first octet (PDU type)
+//        int startIndex = 2;
+//
+//        // Check if the second nibble indicates the length of the recipient number
+//        int secondNibble = Integer.parseInt(pdu.substring(1, 2), 16);
+//        if (secondNibble % 2 == 1) {
+//            startIndex += 1;
+//        }
+//
+//        // Extract the recipient number from the PDU
+//        StringBuilder recipientBuilder = new StringBuilder();
+//        for (int i = startIndex; i < pdu.length(); i += 2) {
+//            String semiOctet = pdu.substring(i, i + 2);
+//            recipientBuilder.append(Integer.parseInt(semiOctet, 16));
+//        }
+//
+//        return recipientBuilder.toString();
+//    }
 
-        // Skip the first octet (PDU type)
-        int startIndex = 2;
+    public static int decodeRecipient(String encodedHex) {
+        byte[] encodedMessage = hexToBytes(encodedHex);
 
-        // Check if the second nibble indicates the length of the recipient number
-        int secondNibble = Integer.parseInt(pdu.substring(1, 2), 16);
-        if (secondNibble % 2 == 1) {
-            startIndex += 1;
-        }
+        int recipientLength = encodedMessage[0] & 0xFF;
+        int recipientStartIndex = 2;
+        int recipientEndIndex = recipientStartIndex + recipientLength - 1;
 
-        // Extract the recipient number from the PDU
-        StringBuilder recipientBuilder = new StringBuilder();
-        for (int i = startIndex; i < pdu.length(); i += 2) {
-            String semiOctet = pdu.substring(i, i + 2);
-            recipientBuilder.append(Integer.parseInt(semiOctet, 16));
-        }
+        int recipient = decodeNumber(encodedMessage, recipientStartIndex, recipientEndIndex);
 
-        return recipientBuilder.toString();
+        return recipient;
     }
+
+    public static int decodeNumber(byte[] encodedMessage, int startIndex, int endIndex) {
+        int number = 0;
+        for (int i = startIndex; i <= endIndex; i++) {
+            number <<= 4; // Przesunięcie bitowe w lewo o 4 bity (odpowiednik pomnożenia przez 16)
+            int nibble = encodedMessage[i] & 0x0F; // Pobranie ostatnich 4 bitów
+            number |= nibble; // Dodanie wartości do liczby
+        }
+        return number;
+    }
+
+    public static byte[] hexToBytes(String hexString) {
+        int length = hexString.length();
+        byte[] bytes = new byte[length / 2];
+        for (int i = 0; i < length; i += 2) {
+            String hexByte = hexString.substring(i, i + 2);
+            bytes[i / 2] = (byte) Integer.parseInt(hexByte, 16);
+        }
+        return bytes;
+    }
+
+
+
+
 }

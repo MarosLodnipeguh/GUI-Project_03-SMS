@@ -2,12 +2,22 @@
 
 
 
-- przy usuwaniu BSC Layerów wywala że index out of bounds
+
 
 MainLogic getRandomVRD
 zamiast czegoś dziwnego w phonebooklogic
 
 - PDU + BTS.decoder + zapis do binarnego
+
+
+plik binarny z pdu?
+
+złączyc wszystko w jeden plik
+
+
+dobre komentarze do enkodowania i dekodowania pdu
+
+plik binarny ma mieć wartości binarne (?????)
 
 
 
@@ -43,6 +53,7 @@ InvalidRecipentException:
 naciśniecie przycisku X stopuje wszystkie thready za pomocą listenerów i potem zapisuje do pliku
 - ewidentnie thready nie sa synchronizowane
 - test czy da sie stworzyć grafike bez inicjalizowania logiki? i na odwrót
+- przy usuwaniu BSC Layerów wywala że index out of bounds
 
 
 
