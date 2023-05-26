@@ -7,32 +7,32 @@ import SMS.Message;
 import SMS.PhoneBookLogic;
 import UI.VRDPanelUI;
 
-import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static SMS.PhoneBookLogic.phoneBook;
-import static SMS.PhoneBookLogic.recipentBook;
+import static SMS.PhoneBookLogic.recipientBook;
 
 
 public class VRD implements Runnable, VRDListener {
-    private String number;
-    private ArrayList <Message> receivedMessages;
+    private final int number;
+    private final ConcurrentLinkedQueue <Message> receivedMessages;
     private boolean autoDelete;
     private VRDListener listener;
     private volatile boolean running = true;
+    private final Object lock;
 
     public VRD () {
         this.number = PhoneBookLogic.generateNumber();
-        this.receivedMessages = new ArrayList<Message>();
+        this.receivedMessages = new ConcurrentLinkedQueue <Message>();
         this.autoDelete = false;
 
         phoneBook.add(number);
-        recipentBook.add(number);
+        recipientBook.add(number);
 
         //DEBUG:
         System.out.println("VRD created with number: " + number);
 
+        lock = new Object();
     }
 
     @Override
@@ -40,22 +40,23 @@ public class VRD implements Runnable, VRDListener {
         System.out.println("VRD: " + number + " started");
 
         while (running) {
+            synchronized (lock) {
+                if (autoDelete) {
 
-            if (autoDelete) {
+                    receivedMessages.clear();
+                    UpdateVRDPanelUI(receivedMessagesCount());
 
-                receivedMessages.clear();
-                UpdateVRDPanelUI(receivedMessagesCount());
-
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    try {
+                        lock.wait(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -68,17 +69,19 @@ public class VRD implements Runnable, VRDListener {
 
 
 
-    public void addMessage (Message message) {
+    public synchronized void addMessage(Message message) {
         receivedMessages.add(message);
         UpdateVRDPanelUI(receivedMessagesCount());
         System.out.println("VRD: " + number + " received message ");
     }
 
-    public int receivedMessagesCount () {
-        return receivedMessages.size();
+    public int receivedMessagesCount() {
+        synchronized (receivedMessages) {
+            return receivedMessages.size();
+        }
     }
 
-    public String getNumber () {
+    public int getNumber () {
         return number;
     }
 
@@ -87,11 +90,11 @@ public class VRD implements Runnable, VRDListener {
     }
 
     @Override
-    public void UpdateVRDPanelUI (int receivedCount) {
-        listener.UpdateVRDPanelUI(receivedCount);
-        System.out.println("VRD: " + number + " updated UI");
+    public void UpdateVRDPanelUI(int receivedCount) {
+        synchronized (listener) {
+            listener.UpdateVRDPanelUI(receivedCount);
+        }
     }
-
 
     public void stopVRD () {
         running = false;

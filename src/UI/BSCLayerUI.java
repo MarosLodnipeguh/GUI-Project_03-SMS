@@ -44,25 +44,6 @@ public class BSCLayerUI extends JPanel implements BSCListener {
 
 
 
-
-//    public void addNewPanel (BSC bsc) {
-////        SwingUtilities.invokeLater(() -> stationsContainer.add(bsc.panel));
-//        SwingUtilities.invokeLater(() -> stationsContainer.add(new BSCPanelUI(bsc)));
-//        SwingUtilities.invokeLater(() -> stationsContainer.revalidate());
-//        SwingUtilities.invokeLater(() -> stationsContainer.repaint());
-//
-//        Thread btsThread = new Thread(bsc);
-//        btsThread.start();
-////            revalidate();
-////            repaint();
-//    }
-
-
-
-
-
-
-
     @Override
     public void updateBSCPanel (UpdateStationPanelUIEvent evt) {
 

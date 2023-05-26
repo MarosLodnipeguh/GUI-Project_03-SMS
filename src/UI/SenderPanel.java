@@ -2,17 +2,9 @@ package UI;
 
 import Logic.VBD;
 import Handlers.VBDListener;
-import SMS.Message;
-import SMS.PhoneBookLogic;
-import SMS.NullRecipentException;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-//import static Application.MainLogic.addToVBDLayer;
-
 
 // VBD SENDER DEVICE PANEL - LEFT SIDE
 public class SenderPanel extends JPanel implements VBDListener {
@@ -20,7 +12,6 @@ public class SenderPanel extends JPanel implements VBDListener {
     private JScrollPane scroll;
     private JPanel devicesContainer;
     private JButton addButton;
-
     private VBDListener listener;
 
     public SenderPanel () {
@@ -28,17 +19,9 @@ public class SenderPanel extends JPanel implements VBDListener {
 
 
         addButton = new JButton("Add");
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed (ActionEvent e) {
-                try {
-                    String text = getMessageText();
-                    AddNewVBD(text);
-
-                } catch (NullRecipentException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
+        addButton.addActionListener(e ->  {
+            String text = getMessageText();
+            AddNewVBD(text);
         });
         add(addButton, BorderLayout.SOUTH);
         

@@ -2,21 +2,26 @@ package Logic;
 
 // Virtual Base Device (Sender)
 
-import Handlers.VBDListener;
 import SMS.Message;
 import SMS.PhoneBookLogic;
-import UI.VBDPanelUI;
+
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static SMS.PhoneBookLogic.phoneBook;
 
 public class VBD implements Runnable {
-    private String number;
-    private String recipent;
-    private String messageText;
-    private boolean isSending;
+    private final int number;
+    private int recipient;
+    private final String messageText;
+    private AtomicInteger sentMessages;
+    private volatile boolean isSending;
     private double sendFrequency;
     private BTS connectedBTS;
     private volatile boolean running = true;
+    private final Object lock;
 
 
     public VBD (String messageText) {
@@ -33,56 +38,51 @@ public class VBD implements Runnable {
         // DEBUG:
         System.out.println("VBD created with number: " + number);
 
+        sentMessages = new AtomicInteger(0);
+
+        lock = new Object();
     }
-
-
-
-    public void connectToBTS (BTS bts) {
-        this.connectedBTS = bts;
-    }
-
-
 
     @Override
-    public void run () {
+    public synchronized void run () {
 
         while (running) {
+            synchronized (lock) {
+                if (isSending) {
+                    // GENERATE MESSAGE:
+                    recipient = PhoneBookLogic.getRandomRecipient();
+                    Message message = new Message(this.number, recipient, this.messageText);
+                    String messageInPDU = message.encodeToPDU();
 
-            if (isSending) {
-                // GENERATE MESSAGE:
-                recipent = PhoneBookLogic.getRandomRecipent();
-                Message message = new Message(this.number, recipent, this.messageText);
+                    // SEND MESSAGE:
+                    connectToBTS(BTSManager.getLayerXBTS(0));
+                    connectedBTS.addMessage(message);
+                    sentMessages.incrementAndGet();
 
-                // SEND MESSAGE:
-                connectToBTS(BTSManager.getLayerXBTS(0));
-                connectedBTS.addMessage(message);
+                    try {
+                        Thread.sleep((long) sendFrequency);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
 
-                try {
-//                System.out.println("\nsleeping for " + sendFrequency + "ms\n");
-                    Thread.sleep((long) sendFrequency);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
 
-            }
-
-            else {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                else {
+                    try {
+                        lock.wait(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
         }
         System.out.println("VBD: " + number + " stopped");
-
     }
 
-    public String getNumber () {
-        return number;
+    public synchronized void connectToBTS (BTS bts) {
+        this.connectedBTS = bts;
     }
-
 
     public void setSending (boolean sending) {
         System.out.println("VBD: " + number + " is sending: " + sending);
@@ -93,24 +93,31 @@ public class VBD implements Runnable {
         this.sendFrequency = sendFrequency;
     }
 
-    // Listener test
-
-//    private ArrayList<VBDListener> listeners = new ArrayList<>();
-//
-//    public void addVBDListener(VBDListener listener){ // argument tutaj to klasa docelowa która nasłuchuje na event! w której sie coś stanie
-//        this.listeners.add(listener);
-//    }
-//
-//    public void fireAddVBDPanel(VBD vbd){
-////        AddVBDEvent evt = new AddVBDEvent( this, this);
-//        for(VBDListener listener : listeners)
-//            listener.addVBDPanel(vbd);
-//    }
-
-
     public void stopVBD () {
         running = false;
     }
+
+    public int getNumber () {
+        return number;
+    }
+
+    public synchronized void writeAllMessagesToFile (String filename) {
+
+        try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filename, true))) {
+
+            String serializedVBD = this.getNumber() + " " + this.sentMessages + "x: '" + messageText + "'\n";
+
+            bos.write(serializedVBD.getBytes());
+
+            System.out.println("Plik zapisany");
+
+        } catch (IOException e) {
+            System.out.println("Błąd zapisu pliku: " + e.getMessage());
+        }
+
+    }
+
+
 
 
 

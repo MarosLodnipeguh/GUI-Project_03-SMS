@@ -8,6 +8,7 @@ import UI.BTSPanelUI;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BTSManager implements BTSListener {
 
@@ -16,25 +17,20 @@ public class BTSManager implements BTSListener {
     private BTSListener listener;
 
     public BTSManager () {
-        btsLayers = new ArrayList<BTSLayer>();
+        btsLayers = new CopyOnWriteArrayList <BTSLayer>();
         lastLayerNumber = 0;
 
         listener = new NullListener();
-
-
-//        btsLayers.add(new BTSLayer(false));
-//        btsLayers.add(new BTSLayer(true));
-
     }
 
-    public static BTS getLayerXBTS (int x) {
+    public synchronized static BTS getLayerXBTS (int x) {
 
         // wybierz ten BTS z warstwy, który zawiera najmniej SMSów:
         BTS selectedBTS = null;
         int minMessages = Integer.MAX_VALUE;
 
         for (BTS bts : btsLayers.get(x).getBtsList()) {
-            if (!bts.isFull) {
+            if (!bts.getIsFull()) {
 
                 if (bts.getWaitingMessages() < minMessages) {
                     minMessages = bts.getWaitingMessages();
@@ -53,7 +49,7 @@ public class BTSManager implements BTSListener {
     }
 
 
-    public void NewBTSLayer () {
+    public synchronized void NewBTSLayer () {
         BTSLayer layer = new BTSLayer(lastLayerNumber);
         lastLayerNumber++;
         btsLayers.add(layer);
@@ -76,34 +72,19 @@ public class BTSManager implements BTSListener {
 //        System.out.println("BTSManager set listener to: " + listener.getClass().getSimpleName());
     }
 
-
-
-
-
-    public void addBTSEnd() {
-        // jeżeli w danej warstwie ilość SMS w każdym z BSC lub BTS jest większa od 5, automatycznie dodawany jest nowy BTS/BSC;
+    public void stopAllLayers () {
+        for (BTSLayer layer : btsLayers) {
+            layer.stopLayer();
+        }
     }
-
-    public void removeBTS() {
-
-    }
-
-    public void getNextBTS() {
-        // podczas przekazania SMSa do kolejnej warstwy zawsze wybierany jest ten BTS/BSC który zawiera najmniej SMSów;
-    }
-
 
 
 
 
 
     @Override
-    public void AddNewBTSPanelUI (BTSPanelUI ui) {
-
-    }
-
+    public void AddNewBTSPanelUI (BTSPanelUI ui) {}
     @Override
-    public void updateBTSPanel (UpdateStationPanelUIEvent evt) {
+    public void updateBTSPanel (UpdateStationPanelUIEvent evt) {}
 
-    }
 }

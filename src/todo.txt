@@ -1,25 +1,50 @@
-ważne:
-- nie stosować arraylist
-- ściganie się threadów i hash mapy
-- ewidentnie thready nie sa synchronizowane
-- zapisywanie do binarnego przy zamknieciu
 
-- każdy BSC ma zawsze Waiting: 1 , czemu?
 
-- wwaliłem opoznienie bts bezposrednio w metode processMessage
-tak samo w BTS
+
 
 - przy usuwaniu BSC Layerów wywala że index out of bounds
 
-InvalidRecipentException:
-- jak wywala InvalidRecipentException to ostatni layer BTS nie aktualizuje interefejsu
-- naprawic exception w ostatnim btsie jak juz dodam jakiegoś vrd, to zeby wysyłał normalnie
+MainLogic getRandomVRD
+zamiast czegoś dziwnego w phonebooklogic
+
+- PDU + BTS.decoder + zapis do binarnego
+
+
+
 
 
 least important:
-- test czy da sie stworzyć grafike bez inicjalizowania logiki?
 - phonebooklogic jako obiekt
 - pousuwać statici
+
+
+punkty: (max 7)
+interace - 1pkt
+zdarzenia - 1pkt
+wątki - 1pkt
+binarne - 1pkt
+użycie kolekcji - 1pkt
+pdu - 1pkt
+dodatkowy opcjonaly - 1 pkt
+
+
+rozwiązane:
+- każdy BSC ma zawsze Waiting: 1 , czemu?
+- wwaliłem opoznienie bts bezposrednio w metode processMessage
+tak samo w BTS
+pogadać z wolinem jak powinienem zsynchronizować thready
+- jak wywala InvalidRecipentException to ostatni layer BTS nie aktualizuje interefejsu
+InvalidRecipentException:
+- naprawic exception w ostatnim btsie jak juz dodam jakiegoś vrd, to zeby wysyłał normalnie i nie dawał exception
+- BSCLayer remove instant messages pass
+- zapisywanie do binarnego przy zamknieciu
+- nie stosować arraylist
+- ściganie się threadów i hash mapy .synchronized?
+naciśniecie przycisku X stopuje wszystkie thready za pomocą listenerów i potem zapisuje do pliku
+- ewidentnie thready nie sa synchronizowane
+- test czy da sie stworzyć grafike bez inicjalizowania logiki? i na odwrót
+
+
 
 
 

@@ -2,6 +2,10 @@ package UI;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainFrame extends JFrame {
 
@@ -14,7 +18,7 @@ public class MainFrame extends JFrame {
 
     public MainFrame () throws HeadlessException {
         setTitle("Symulator SMS");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setSize(1600, 600);
 
         mainPanel = new MainPanel();
@@ -26,8 +30,34 @@ public class MainFrame extends JFrame {
         sender = mainPanel.getSender();
         stations = mainPanel.getStations();
         receiver = mainPanel.getReceiver();
+
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                dispose();
+                System.out.println("Window closed");
+                System.out.println("STOPPING ALL THREADS IN BACKGROUND AND GENERATING DATA FILE");
+
+                callFunctions();
+
+                System.exit(0);
+            }
+        });
     }
 
+
+
+    private List <logicToGraphics> functions =new ArrayList<>();
+    public void addFunction (logicToGraphics function) {
+        functions.add(function);
+    }
+    public void callFunctions () {
+        for (logicToGraphics function : functions) {
+            function.execute();
+            System.out.println("Function called");
+        }
+    }
 
 
     public SenderPanel getSender () {

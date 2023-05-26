@@ -5,36 +5,38 @@ import Handlers.VRDListener;
 import UI.VBDPanelUI;
 import UI.VRDPanelUI;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class MainLogic implements VBDListener, VRDListener {
     
-    private List <VBD> VBDs;
+    private final List <VBD> VBDs;
     private VBDListener vbdListener;
 
-    private BTSManager btsManager;
-    private BSCManager bscManager;
+    private final BTSManager btsManager;
+    private final BSCManager bscManager;
 
     private static List <VRD> VRDs;
     private VRDListener vrdListener;
 
 
     public MainLogic () {
-        this.VBDs = new ArrayList<VBD>();
+        this.VBDs = new CopyOnWriteArrayList<VBD>();
 
         btsManager = new BTSManager ();
 
         bscManager = new BSCManager ();
 
-        this.VRDs = new ArrayList<VRD>();
-
+        this.VRDs = new CopyOnWriteArrayList<VRD>();
 
     }
 
     // ======================================================= VBD =======================================================
     @Override
-    public void AddNewVBD (String messageText) {
+    public synchronized void AddNewVBD (String messageText) {
         VBD vbd = new VBD(messageText);
         VBDs.add(vbd);
 
@@ -53,14 +55,14 @@ public class MainLogic implements VBDListener, VRDListener {
     }
 
     @Override
-    public void RemoveVBD (VBD vbd) {
+    public synchronized void RemoveVBD (VBD vbd) {
         vbd.stopVBD();
         VBDs.remove(vbd);
     }
 
     // ======================================================= VRD =======================================================
     @Override
-    public void AddNewVRD () {
+    public synchronized void AddNewVRD () {
         VRD vrd = new VRD();
         VRDs.add(vrd);
 
@@ -80,7 +82,7 @@ public class MainLogic implements VBDListener, VRDListener {
     }
 
     @Override
-    public void RemoveVRD (VRD vrd) {
+    public synchronized void RemoveVRD (VRD vrd) {
         vrd.stopVRD();
         VRDs.remove(vrd);
     }
@@ -96,23 +98,54 @@ public class MainLogic implements VBDListener, VRDListener {
         return bscManager;
     }
 
-    public void setVbdListener (VBDListener vbdListener) {
+    public synchronized void setVbdListener (VBDListener vbdListener) {
         this.vbdListener = vbdListener;
     }
 
-    public void setVrdListener (VRDListener vrdListener) {
+    public synchronized void setVrdListener (VRDListener vrdListener) {
         this.vrdListener = vrdListener;
     }
 
-    public static VRD getVRD (String number) {
+    public static VRD getVRD (int number) {
         for (VRD vrd : VRDs) {
-            if (vrd.getNumber().equals(number)) {
+            if (vrd.getNumber() == number) {
                 return vrd;
             }
         }
         return null;
     }
-    
+
+    public void stopAllThreads () {
+
+        for (VBD vbd : VBDs) {
+            vbd.stopVBD();
+        }
+
+        btsManager.stopAllLayers();
+
+        bscManager.stopAllLayers();
+
+        for (VRD vrd : VRDs) {
+            vrd.stopVRD();
+        }
+    }
+
+
+    public void writeVBDsDataToFile () {
+
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH.mm.ss");
+        String formattedDateTime = currentDateTime.format(formatter);
+
+        String filename = "VBDs Dump " + formattedDateTime + ".bin";
+        for (VBD vbd : VBDs) {
+            vbd.writeAllMessagesToFile(filename);
+        }
+    }
+
+
+
+
     // ======================================================= UNUSED =======================================================
 
     

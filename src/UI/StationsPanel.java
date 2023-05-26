@@ -7,11 +7,9 @@ import Handlers.BTSListener;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 // BTS & BSC CONTROLLER STATIONS PANEL - MIDDLE
-public class StationsPanel extends JPanel implements BTSListener, BSCListener { //, MouseListener, ActionListener
+public class StationsPanel extends JPanel implements BTSListener, BSCListener {
 
     private JScrollPane scroll;
     private JPanel stationsContainer;
@@ -30,27 +28,15 @@ public class StationsPanel extends JPanel implements BTSListener, BSCListener { 
 
         setLayout(new BorderLayout());
 
-
         addButton = new JButton("Add Layer");
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed (ActionEvent e) {
-
-                AddNewBSCLayer();
-            }
+        addButton.addActionListener(e -> {
+            AddNewBSCLayer();
         });
-
 
         removeButton = new JButton("Remove Layer");
-        removeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed (ActionEvent e) {
-
-                RemoveLastBSCLayer();
-            }
+        removeButton.addActionListener(e -> {
+            RemoveLastBSCLayer();
         });
-
-
 
         stationsContainer = new JPanel();
         stationsContainer.setLayout(new BoxLayout(stationsContainer, BoxLayout.X_AXIS));

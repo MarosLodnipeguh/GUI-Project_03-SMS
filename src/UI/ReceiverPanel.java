@@ -22,13 +22,10 @@ public class ReceiverPanel extends JPanel implements VRDListener {
 
 
         addButton = new JButton("Add");
-        addButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed (ActionEvent e) {
-
-                AddNewVRD();
-            }
+        addButton.addActionListener(e ->  {
+            AddNewVRD();
         });
+
         add(addButton, BorderLayout.SOUTH);
 
         devicesContainer = new JPanel();

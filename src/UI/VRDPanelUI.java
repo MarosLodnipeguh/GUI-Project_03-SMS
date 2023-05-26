@@ -2,35 +2,24 @@ package UI;
 
 import Handlers.VRDListener;
 import Logic.VRD;
-import SMS.NullRecipentException;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class VRDPanelUI extends JPanel implements VRDListener {
-//    private JLabel numberLabel;
-//    private JTextField deviceNumberTextField;
+
     private JLabel receivedMessagesNumber;
     private JCheckBox autoMessageDelete;
     private JButton removeButton;
-
     private VRDListener LogicListener;
     private VRDListener UIListener;
-
 
     public VRDPanelUI (VRD vrd) {
         setPreferredSize(new Dimension(210, 110));
         setBorder(BorderFactory.createTitledBorder("VRD"));
 
-
-        // ===================================== CONTENT ===================================== //
-//        numberLabel = new JLabel("Number: ");
-//        deviceNumberTextField = new JTextField(deviceNumber);
-//        deviceNumberTextField.setEditable(false);
         // ===================================== CHECK BOX ===================================== //
         autoMessageDelete = new JCheckBox("Auto delete messages (10s) : no");
 
@@ -52,15 +41,8 @@ public class VRDPanelUI extends JPanel implements VRDListener {
         // ===================================== STOP BUTTON ===================================== //
         removeButton = new JButton("Remove VRD");
 
-        removeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed (ActionEvent e) {
-                try {
-                    RemoveVRD(vrd);
-                } catch (NullRecipentException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
+        removeButton.addActionListener(e ->  {
+            RemoveVRD(vrd);
         });
 
 

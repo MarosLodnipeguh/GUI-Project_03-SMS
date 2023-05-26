@@ -2,14 +2,11 @@ package UI;
 
 import Handlers.VBDListener;
 import Logic.VBD;
-import SMS.NullRecipentException;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Hashtable;
 
 public class VBDPanelUI extends JPanel implements VBDListener {
@@ -36,7 +33,7 @@ public class VBDPanelUI extends JPanel implements VBDListener {
         // ===================================== CONTENT ===================================== //
         numberLabel = new JLabel("Number: ");
         // ===================================== NUMBER FIELD ===================================== //
-        deviceNumberTextField = new JTextField(vbd.getNumber());
+        deviceNumberTextField = new JTextField( String.valueOf(vbd.getNumber()) );
         deviceNumberTextField.setEditable(false);
 
         // ===================================== COMBO BOX ===================================== //
@@ -83,16 +80,10 @@ public class VBDPanelUI extends JPanel implements VBDListener {
         // ===================================== STOP BUTTON ===================================== //
         removeButton = new JButton("Remove VBD");
 
-        removeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed (ActionEvent e) {
-                try {
-                    RemoveVBD(vbd);
-                } catch (NullRecipentException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
+        removeButton.addActionListener(e -> {
+            RemoveVBD(vbd);
         });
+
 
 
         add(numberLabel);

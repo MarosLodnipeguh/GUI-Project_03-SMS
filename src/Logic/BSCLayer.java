@@ -6,32 +6,23 @@ import Handlers.UpdateStationPanelUIEvent;
 import UI.BSCLayerUI;
 import UI.BSCPanelUI;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class BSCLayer implements BSCListener {
 
-    private List<BSC> bscList;
-//    private HashMap<BSC> bscHashMap;
-//    private ConcurrentHashMap to jednak na przechowywanie SMSów to potrzebuje?
+    private final ConcurrentLinkedQueue<BSC> bscList;
     private int layerNumber;
     private BSCListener listener;
 
 
     public BSCLayer (int layerNumber) {
-        this.bscList = new ArrayList<BSC>();
+        this.bscList = new ConcurrentLinkedQueue<>();
         this.layerNumber = layerNumber;
 
         this.listener = new NullListener();
-
-        // stan uruchomieniowy:
-//        newBSC();
     }
 
-
-    public void newBSC () {
+    public synchronized void newBSC () {
         BSC bsc = new BSC(this);
         bscList.add(bsc);
 
@@ -49,15 +40,13 @@ public class BSCLayer implements BSCListener {
     @Override
     public void AddNewBSCPanelUI (BSCPanelUI ui) {
         listener.AddNewBSCPanelUI(ui);
-//        System.out.println("Panel sent a panel to: " + listener.getClass().getSimpleName());
     }
 
     public void setListener (BSCListener listener) {
         this.listener = listener;
-//        System.out.println("BSCLayer has a listener now: " + listener.getClass().getSimpleName());
     }
 
-    public List<BSC> getBscList () {
+    public ConcurrentLinkedQueue<BSC> getBscList () {
         return bscList;
     }
 
@@ -65,7 +54,7 @@ public class BSCLayer implements BSCListener {
         return layerNumber;
     }
 
-    public void stopLayer () {
+    public synchronized void stopLayer () {
         for (BSC bsc : bscList) {
             bsc.stopBSC();
         }
@@ -75,29 +64,13 @@ public class BSCLayer implements BSCListener {
 
 
     @Override
-    public void AddNewBSCLayerUI (BSCLayerUI ui) {
-
-    }
-
-
-
+    public void AddNewBSCLayerUI (BSCLayerUI ui) {}
     @Override
-    public void AddNewBSCLayer () {
-
-    }
-
+    public void AddNewBSCLayer () {}
     @Override
-    public void RemoveLastBSCLayer () {
-
-    }
-
-
-
+    public void RemoveLastBSCLayer () {}
     @Override
-    public void updateBSCPanel (UpdateStationPanelUIEvent evt) {
-
-    }
-
+    public void updateBSCPanel (UpdateStationPanelUIEvent evt) {}
 
 }
 

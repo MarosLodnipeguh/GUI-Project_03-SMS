@@ -1,36 +1,28 @@
 package Logic;
 
-
-
 import Handlers.BTSListener;
 import Handlers.NullListener;
 import Handlers.UpdateStationPanelUIEvent;
 import UI.BTSLayerUI;
 import UI.BTSPanelUI;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BTSLayer implements BTSListener {
-    private List<BTS> btsList;
+    private final ConcurrentLinkedQueue <BTS> btsList;
     private int layerNumber;
-//    private boolean isLastLayer;
     private BTSListener listener;
 
     public BTSLayer (int layerNumber) {
-        this.btsList = new ArrayList<BTS>();
+        this.btsList = new ConcurrentLinkedQueue <BTS>();
         this.layerNumber = layerNumber;
 
         this.listener = new NullListener();
-
-
-//        // stan uruchomieniowy:
-//        addBTS(new BTS(this));
-
-
     }
 
-    public void newBTS () {
+    public synchronized void newBTS () {
         BTS bts = new BTS(this);
         btsList.add(bts);
 
@@ -40,7 +32,6 @@ public class BTSLayer implements BTSListener {
 
         AddNewBTSPanelUI(ui);
 
-
         Thread btsThread = new Thread(bts);
         btsThread.start();
     }
@@ -48,20 +39,13 @@ public class BTSLayer implements BTSListener {
     @Override
     public void AddNewBTSPanelUI (BTSPanelUI ui) {
         listener.AddNewBTSPanelUI(ui);
-//        System.out.println("Panel sent a panel to: " + listener.getClass().getSimpleName());
     }
 
     public void setListener (BTSListener listener) {
         this.listener = listener;
-//        System.out.println("BTSLayer has a listener now: " + listener.getClass().getSimpleName());
     }
 
-
-
-
-
-
-    public List<BTS> getBtsList () {
+    public ConcurrentLinkedQueue <BTS> getBtsList () {
         return btsList;
     }
 
@@ -70,14 +54,13 @@ public class BTSLayer implements BTSListener {
     }
 
     @Override
-    public void AddNewBTSLayerUI (BTSLayerUI ui) {
-        
-    }
-
-    
-
+    public void AddNewBTSLayerUI (BTSLayerUI ui) {}
     @Override
-    public void updateBTSPanel (UpdateStationPanelUIEvent evt) {
+    public void updateBTSPanel (UpdateStationPanelUIEvent evt) {}
 
+    public void stopLayer () {
+        for (BTS bts : btsList) {
+            bts.stopBTS();
+        }
     }
 }

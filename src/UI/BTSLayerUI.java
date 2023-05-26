@@ -47,24 +47,10 @@ public class BTSLayerUI extends JPanel implements BTSListener {
         return LayerNumber;
     }
 
-    //    public void addNewPanel (BTS bts) {
-//        SwingUtilities.invokeLater(() -> stationsContainer.add(bts.panel));
-//        SwingUtilities.invokeLater(() -> stationsContainer.revalidate());
-//        SwingUtilities.invokeLater(() -> stationsContainer.repaint());
-//
-//        Thread btsThread = new Thread(bts);
-//        btsThread.start();
-////            revalidate();
-////            repaint();
-//    }
-
     @Override
     public void AddNewBTSLayerUI (BTSLayerUI ui) {
 
     }
-
-
-
     @Override
     public void updateBTSPanel (UpdateStationPanelUIEvent evt) {
 
