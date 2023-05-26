@@ -4,6 +4,11 @@ ważne:
 - ewidentnie thready nie sa synchronizowane
 - zapisywanie do binarnego przy zamknieciu
 
+- każdy BSC ma zawsze Waiting: 1 , czemu?
+
+- wwaliłem opoznienie bts bezposrednio w metode processMessage
+tak samo w BTS
+
 - przy usuwaniu BSC Layerów wywala że index out of bounds
 
 InvalidRecipentException:

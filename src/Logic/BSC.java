@@ -55,14 +55,13 @@ public class BSC implements Runnable {
 //                panel.updateProcessedMessagesNumber(getProcessedMessages());
 
 
-                UpdateStationPanelUIEvent evt = new UpdateStationPanelUIEvent(this, this.id, this.getProcessedMessages(), this.WaitingMessages);
-                listener.updateBSCPanel(evt);
+                listener.updateBSCPanel(new UpdateStationPanelUIEvent(this, this.id, this.getProcessedMessages(), this.WaitingMessages));
 
-                try {
-                    Thread.sleep((long) (Math.random() * 10000 + 5000)); // wait for random time (5-15s)
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    Thread.sleep((long) (Math.random() * 10000 + 5000)); // wait for random time (5-15s)
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
 
 
                 if (layerNumber == BSCManager.getLastLayerNumber()) {
@@ -74,6 +73,8 @@ public class BSC implements Runnable {
                 }
 
                 processNextMessage();
+
+                listener.updateBSCPanel(new UpdateStationPanelUIEvent(this, this.id, this.getProcessedMessages(), this.WaitingMessages));
 
 //                panel.updateWaitingMessagesNumber(getWaitingMessages());
 //                panel.updateProcessedMessagesNumber(getProcessedMessages());
@@ -94,12 +95,12 @@ public class BSC implements Runnable {
     }
 
     public void addMessage (Message message) {
+
+        gatheredMessages.add(message);
+        WaitingMessages = gatheredMessages.size();
+
         if (gatheredMessages.size() > 5) {
             isFull = true;
-        } else {
-            gatheredMessages.add(message);
-            WaitingMessages = gatheredMessages.size();
-//            System.out.println(gatheredMessages.size() + " messages in BSC " + id);
         }
 
     }
@@ -113,6 +114,13 @@ public class BSC implements Runnable {
     }
 
     public void processNextMessage() {
+
+        try {
+            Thread.sleep((long) (Math.random() * 10000 + 5000)); // wait for random time (5-15s)
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         Message m = gatheredMessages.get(0);
 
         // Przetwarzanie wiadomości...

@@ -51,13 +51,12 @@ public class BTS implements Runnable{
 
 
     public void addMessage(Message message) {
+
+        gatheredMessages.add(message);
+        WaitingMessages = gatheredMessages.size();
+
         if (gatheredMessages.size() > 5) {
             isFull = true;
-//            System.out.println("BTS " + id + " is full");
-        } else {
-            gatheredMessages.add(message);
-            WaitingMessages = gatheredMessages.size();
-//            System.out.println(gatheredMessages.size() + " messages in BTS " + id);
         }
 
     }
@@ -73,12 +72,12 @@ public class BTS implements Runnable{
 
                 listener.updateBTSPanel(new UpdateStationPanelUIEvent(this, this.id, this.getProcessedMessages(), this.WaitingMessages));
 
-                try {
-//                    System.out.println("BTS: " + id + " waiting for 3 seconds");
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+//                try {
+////                    System.out.println("BTS: " + id + " waiting for 3 seconds");
+//                    Thread.sleep(3000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
 
 
                 if (layerNumber == 0) {
@@ -122,6 +121,14 @@ public class BTS implements Runnable{
     }
 
     public void processNextMessage() {
+
+        try {
+//                    System.out.println("BTS: " + id + " waiting for 3 seconds");
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         Message m = gatheredMessages.get(0);
 
         try {

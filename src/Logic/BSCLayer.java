@@ -7,11 +7,15 @@ import UI.BSCLayerUI;
 import UI.BSCPanelUI;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class BSCLayer implements BSCListener {
 
     private List<BSC> bscList;
+//    private HashMap<BSC> bscHashMap;
+//    private ConcurrentHashMap to jednak na przechowywanie SMSów to potrzebuje?
     private int layerNumber;
     private BSCListener listener;
 
