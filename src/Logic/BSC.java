@@ -62,7 +62,7 @@ public class BSC implements Runnable {
             }
 
         }
-        System.out.println("BSC: " + id + " stopped");
+//        System.out.println("BSC: " + id + " stopped");
     }
 
     public void addMessage(String message) {
@@ -105,6 +105,7 @@ public class BSC implements Runnable {
                 m = gatheredMessages.poll();
                 waitingMessages.decrementAndGet();
                 processedMessages.incrementAndGet();
+                listener.updateBSCPanel(new UpdateStationPanelUIEvent(this, this.id, this.getProcessedMessages(), this.getWaitingMessages()));
                 isFull = false;
             } else {
                 return; // No messages to process
@@ -182,7 +183,7 @@ public class BSC implements Runnable {
         return waitingMessages.get();
     }
 
-    public boolean getisFull () {
+    public boolean getIsFull () {
         return isFull;
     }
 }

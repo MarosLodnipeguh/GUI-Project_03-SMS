@@ -22,24 +22,27 @@ public class BSCManager implements BSCListener {
         listener = new NullListener();
     }
 
-    public static /*synchronized*/ BSC getLayerXbsc (int x) {
+    public static synchronized BSC getLayerXbsc (int x) {
         // Wybierz ten BSC z warstwy, który zawiera najmniej SMSów:
         BSC selectedBSC = null;
         int minMessages = Integer.MAX_VALUE;
 
         for (BSC bsc : bscLayers.get(x).getBscList()) {
-            if (!bsc.getisFull()) {
+            if (!bsc.getIsFull()) {
                 if (bsc.getWaitingMessages() < minMessages) {
                     minMessages = bsc.getWaitingMessages();
                     selectedBSC = bsc;
                 }
-                return selectedBSC;
             }
         }
 
-        // Jeżeli w danej warstwie ilość SMS w każdym z BSC lub BTS jest większa od 5, automatycznie dodawany jest nowy BTS/BSC;
-        bscLayers.get(x).newBSC();
-        return getLayerXbsc(x);
+        if (selectedBSC != null) {
+            return selectedBSC;
+        } else {
+            bscLayers.get(x).newBSC(); // Jeżeli w danej warstwie ilość SMS w każdym z BSC lub BSC jest większa od 5, automatycznie dodawany jest nowy BSC/BSC;
+            return getLayerXbsc(x);
+        }
+        
     }
 
     @Override

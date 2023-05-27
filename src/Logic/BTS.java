@@ -64,7 +64,7 @@ public class BTS implements Runnable {
             }
 
         }
-        System.out.println("BTS: " + id + " stopped");
+//        System.out.println("BTS: " + id + " stopped");
     }
 
     public void addMessage(String message) {
@@ -107,6 +107,7 @@ public class BTS implements Runnable {
                 m = gatheredMessages.poll();
                 waitingMessages.decrementAndGet();
                 processedMessages.incrementAndGet();
+                listener.updateBTSPanel(new UpdateStationPanelUIEvent(this, this.id, this.getProcessedMessages(), this.getWaitingMessages()));
                 isFull = false;
             } else {
                 return; // No messages to process
@@ -170,31 +171,6 @@ public class BTS implements Runnable {
     }
 
     // ==================================================== PDU DECODING =============================================================
-
-//    public static String decodeRecipientFromPDU(String pdu) {
-//        // PDU length should be even
-//        if (pdu.length() % 2 != 0) {
-//            throw new IllegalArgumentException("Invalid PDU length");
-//        }
-//
-//        // Skip the first octet (PDU type)
-//        int startIndex = 2;
-//
-//        // Check if the second nibble indicates the length of the recipient number
-//        int secondNibble = Integer.parseInt(pdu.substring(1, 2), 16);
-//        if (secondNibble % 2 == 1) {
-//            startIndex += 1;
-//        }
-//
-//        // Extract the recipient number from the PDU
-//        StringBuilder recipientBuilder = new StringBuilder();
-//        for (int i = startIndex; i < pdu.length(); i += 2) {
-//            String semiOctet = pdu.substring(i, i + 2);
-//            recipientBuilder.append(Integer.parseInt(semiOctet, 16));
-//        }
-//
-//        return recipientBuilder.toString();
-//    }
 
     public static int decodeRecipient(String encodedHex) {
         byte[] encodedMessage = hexToBytes(encodedHex);

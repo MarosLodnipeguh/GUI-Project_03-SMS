@@ -88,7 +88,7 @@ public class VBD implements Runnable {
 //            }
 
         }
-        System.out.println("VBD: " + number + " stopped");
+//        System.out.println("VBD: " + number + " stopped");
     }
 
     public /*synchronized*/ void connectToBTS (BTS bts) {

@@ -61,7 +61,7 @@ public class VRD implements Runnable, VRDListener {
 //            }
 
         }
-        System.out.println("VRD: " + number + " stopped");
+//        System.out.println("VRD: " + number + " stopped");
     }
 
 

@@ -1,26 +1,18 @@
 
-
-
-
-
-
 MainLogic getRandomVRD
 zamiast czegoś dziwnego w phonebooklogic
 
-- PDU + BTS.decoder + zapis do binarnego
 
-
-plik binarny z pdu?
 
 złączyc wszystko w jeden plik
 
-
 dobre komentarze do enkodowania i dekodowania pdu
 
+wiecej zastosowania Functional Interface?
+
+
+plik binarny z pdu?
 plik binarny ma mieć wartości binarne (?????)
-
-
-
 
 
 least important:
@@ -54,6 +46,9 @@ naciśniecie przycisku X stopuje wszystkie thready za pomocą listenerów i pote
 - ewidentnie thready nie sa synchronizowane
 - test czy da sie stworzyć grafike bez inicjalizowania logiki? i na odwrót
 - przy usuwaniu BSC Layerów wywala że index out of bounds
+- PDU + BTS.decoder + zapis do binarnego
+- wiecej synchronizowania, bo chyba sie rozjezdzaja bts jak sie patrzy ktory dostaje w pierwszej kolejnosci
+- naprawiony problem z bts/bsc pickerem
 
 
 

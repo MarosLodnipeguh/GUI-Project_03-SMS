@@ -23,29 +23,27 @@ public class BTSManager implements BTSListener {
         listener = new NullListener();
     }
 
-    public /*synchronized*/ static BTS getLayerXBTS (int x) {
-
+    public synchronized static BTS getLayerXBTS (int x) {
         // wybierz ten BTS z warstwy, który zawiera najmniej SMSów:
         BTS selectedBTS = null;
         int minMessages = Integer.MAX_VALUE;
 
         for (BTS bts : btsLayers.get(x).getBtsList()) {
             if (!bts.getIsFull()) {
-
                 if (bts.getWaitingMessages() < minMessages) {
                     minMessages = bts.getWaitingMessages();
                     selectedBTS = bts;
                 }
-
-//                System.out.println("selectedBTS: " + selectedBTS.getId());
-                return selectedBTS;
             }
-
         }
 
-        // jeżeli w danej warstwie ilość SMS w każdym z BSC lub BTS jest większa od 5, automatycznie dodawany jest nowy BTS/BSC;
-        btsLayers.get(x).newBTS();
-        return getLayerXBTS(x);
+        if (selectedBTS != null) {
+            return selectedBTS;
+        } else {
+            btsLayers.get(x).newBTS(); // Jeżeli w danej warstwie ilość SMS w każdym z BSC lub BTS jest większa od 5, automatycznie dodawany jest nowy BTS/BSC;
+            return getLayerXBTS(x);
+        }
+
     }
 
 
