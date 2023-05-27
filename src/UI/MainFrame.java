@@ -1,5 +1,7 @@
 package UI;
 
+import Handlers.MainFrameFunctionsListener;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
@@ -48,12 +50,12 @@ public class MainFrame extends JFrame {
 
 
 
-    private List <logicToGraphics> functions =new ArrayList<>();
-    public void addFunction (logicToGraphics function) {
+    private List <MainFrameFunctionsListener> functions = new ArrayList<>();
+    public void addFunction (MainFrameFunctionsListener function) {
         functions.add(function);
     }
     public void callFunctions () {
-        for (logicToGraphics function : functions) {
+        for (MainFrameFunctionsListener function : functions) {
             function.execute();
         }
     }
