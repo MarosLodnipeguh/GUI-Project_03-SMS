@@ -3,6 +3,7 @@ package UI;
 import Logic.BSC;
 import Handlers.BSCListener;
 import Handlers.UpdateStationPanelUIEvent;
+import Logic.BSCLayer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -42,13 +43,13 @@ public class BSCPanelUI extends JPanel implements BSCListener {
 
 
     @Override
-    public void AddNewBSCLayerUI (BSCLayerUI ui) {
-
+    public BSCListener AddNewBSCLayerUI(BSCLayer layer) {
+        return null;
     }
 
     @Override
-    public void AddNewBSCPanelUI (BSCPanelUI ui) {
-
+    public BSCListener AddNewBSCPanelUI(BSC bsc) {
+        return null;
     }
 
 

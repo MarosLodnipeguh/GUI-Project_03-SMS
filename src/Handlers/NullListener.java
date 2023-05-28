@@ -1,18 +1,17 @@
 package Handlers;
 
-import Logic.VBD;
-import Logic.VRD;
+import Logic.*;
 import UI.*;
 
 public class NullListener implements VBDListener, BTSListener, BSCListener, VRDListener{
     @Override
-    public void AddNewBSCLayerUI (BSCLayerUI ui) {
-
+    public BSCListener AddNewBSCLayerUI(BSCLayer layer) {
+        return null;
     }
 
     @Override
-    public void AddNewBSCPanelUI (BSCPanelUI ui) {
-
+    public BSCListener AddNewBSCPanelUI(BSC bsc) {
+        return null;
     }
 
     @Override
@@ -31,13 +30,15 @@ public class NullListener implements VBDListener, BTSListener, BSCListener, VRDL
     }
 
     @Override
-    public void AddNewBTSLayerUI (BTSLayerUI ui) {
+    public BTSListener AddNewBTSLayerUI (BTSLayer layer) {
 
+        return null;
     }
 
     @Override
-    public void AddNewBTSPanelUI (BTSPanelUI ui) {
+    public BTSListener AddNewBTSPanelUI (BTS bts) {
 
+        return null;
     }
 
     @Override

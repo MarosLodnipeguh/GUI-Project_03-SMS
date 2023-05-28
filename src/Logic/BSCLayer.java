@@ -22,24 +22,22 @@ public class BSCLayer implements BSCListener {
         this.listener = new NullListener();
     }
 
-    public /*synchronized*/ void newBSC () {
+
+    public void newBSC () {
         BSC bsc = new BSC(this);
         bscList.add(bsc);
 
         //UI:
-        BSCPanelUI ui = new BSCPanelUI(bsc);
+        BSCListener ui = AddNewBSCPanelUI(bsc);
         bsc.setListener(ui);
-
-        AddNewBSCPanelUI(ui);
-
 
         Thread bscThread = new Thread(bsc);
         bscThread.start();
     }
 
     @Override
-    public void AddNewBSCPanelUI (BSCPanelUI ui) {
-        listener.AddNewBSCPanelUI(ui);
+    public BSCListener AddNewBSCPanelUI(BSC bsc) {
+        return listener.AddNewBSCPanelUI(bsc);
     }
 
     public void setListener (BSCListener listener) {
@@ -64,7 +62,9 @@ public class BSCLayer implements BSCListener {
 
 
     @Override
-    public void AddNewBSCLayerUI (BSCLayerUI ui) {}
+    public BSCListener AddNewBSCLayerUI(BSCLayer layer) {
+        return null;
+    }
     @Override
     public void AddNewBSCLayer () {}
     @Override

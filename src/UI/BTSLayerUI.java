@@ -2,6 +2,7 @@ package UI;
 
 import Handlers.BTSListener;
 import Handlers.UpdateStationPanelUIEvent;
+import Logic.BTS;
 import Logic.BTSLayer;
 
 import javax.swing.*;
@@ -32,8 +33,10 @@ public class BTSLayerUI extends JPanel implements BTSListener {
     }
 
     @Override
-    public void AddNewBTSPanelUI (BTSPanelUI ui) {
-//        System.out.println("AddNewBTSPanelUI");
+    public BTSListener AddNewBTSPanelUI (BTS bts) {
+        BTSPanelUI ui = new BTSPanelUI(bts);
+
+
         SwingUtilities.invokeLater(() -> stationsContainer.add(ui));
         SwingUtilities.invokeLater(() -> stationsContainer.revalidate());
         SwingUtilities.invokeLater(() -> stationsContainer.repaint());
@@ -41,6 +44,8 @@ public class BTSLayerUI extends JPanel implements BTSListener {
 
         revalidate();
         repaint();
+
+        return ui;
     }
 
     public int getLayerNumber () {
@@ -48,8 +53,9 @@ public class BTSLayerUI extends JPanel implements BTSListener {
     }
 
     @Override
-    public void AddNewBTSLayerUI (BTSLayerUI ui) {
+    public BTSListener AddNewBTSLayerUI (BTSLayer layer) {
 
+        return null;
     }
     @Override
     public void updateBTSPanel (UpdateStationPanelUIEvent evt) {

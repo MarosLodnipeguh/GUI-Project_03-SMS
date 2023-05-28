@@ -1,5 +1,6 @@
 package UI;
 
+import Logic.BSC;
 import Logic.BSCLayer;
 import Handlers.BSCListener;
 import Handlers.UpdateStationPanelUIEvent;
@@ -30,9 +31,11 @@ public class BSCLayerUI extends JPanel implements BSCListener {
 
     }
 
+
     @Override
-    public void AddNewBSCPanelUI (BSCPanelUI ui) {
-//        System.out.println("AddNewBSCPanelUI");
+    public BSCListener AddNewBSCPanelUI (BSC bsc) {
+        BSCPanelUI ui = new BSCPanelUI(bsc);
+
         SwingUtilities.invokeLater(() -> stationsContainer.add(ui));
         SwingUtilities.invokeLater(() -> stationsContainer.revalidate());
         SwingUtilities.invokeLater(() -> stationsContainer.repaint());
@@ -40,6 +43,8 @@ public class BSCLayerUI extends JPanel implements BSCListener {
 
         revalidate();
         repaint();
+
+        return ui;
     }
 
 
@@ -59,7 +64,7 @@ public class BSCLayerUI extends JPanel implements BSCListener {
 
     }
     @Override
-    public void AddNewBSCLayerUI (BSCLayerUI ui) {
-
+    public BSCListener AddNewBSCLayerUI(BSCLayer layer) {
+        return null;
     }
 }

@@ -3,12 +3,9 @@ package Logic;
 import Handlers.BTSListener;
 import Handlers.NullListener;
 import Handlers.UpdateStationPanelUIEvent;
-import UI.BTSLayerUI;
 import UI.BTSPanelUI;
 
-import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BTSLayer implements BTSListener {
     private final ConcurrentLinkedQueue <BTS> btsList;
@@ -22,23 +19,21 @@ public class BTSLayer implements BTSListener {
         this.listener = new NullListener();
     }
 
-    public /*synchronized*/ void newBTS () {
+    public void newBTS () {
         BTS bts = new BTS(this);
         btsList.add(bts);
 
         //UI:
-        BTSPanelUI ui = new BTSPanelUI(bts);
+        BTSListener ui = AddNewBTSPanelUI(bts);
         bts.setListener(ui);
-
-        AddNewBTSPanelUI(ui);
 
         Thread btsThread = new Thread(bts);
         btsThread.start();
     }
 
     @Override
-    public void AddNewBTSPanelUI (BTSPanelUI ui) {
-        listener.AddNewBTSPanelUI(ui);
+    public BTSListener AddNewBTSPanelUI (BTS bts) {
+        return listener.AddNewBTSPanelUI(bts);
     }
 
     public void setListener (BTSListener listener) {
@@ -54,7 +49,9 @@ public class BTSLayer implements BTSListener {
     }
 
     @Override
-    public void AddNewBTSLayerUI (BTSLayerUI ui) {}
+    public BTSListener AddNewBTSLayerUI (BTSLayer layer) {
+        return null;
+    }
     @Override
     public void updateBTSPanel (UpdateStationPanelUIEvent evt) {}
 

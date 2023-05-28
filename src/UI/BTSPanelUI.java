@@ -3,6 +3,7 @@ package UI;
 import Handlers.BTSListener;
 import Handlers.UpdateStationPanelUIEvent;
 import Logic.BTS;
+import Logic.BTSLayer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -45,13 +46,13 @@ public class BTSPanelUI extends JPanel implements BTSListener {
 
 
     @Override
-    public void AddNewBTSLayerUI (BTSLayerUI ui) {
-
+    public BTSListener AddNewBTSLayerUI (BTSLayer layer) {
+        return null;
     }
 
     @Override
-    public void AddNewBTSPanelUI (BTSPanelUI ui) {
-
+    public BTSListener AddNewBTSPanelUI (BTS bts) {
+        return null;
     }
 
 }

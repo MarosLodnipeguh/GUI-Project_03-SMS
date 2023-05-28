@@ -4,9 +4,7 @@ import Handlers.BTSListener;
 import Handlers.NullListener;
 import Handlers.UpdateStationPanelUIEvent;
 import UI.BTSLayerUI;
-import UI.BTSPanelUI;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -47,22 +45,21 @@ public class BTSManager implements BTSListener {
     }
 
 
-    public /*synchronized*/ void NewBTSLayer () {
+    public void NewBTSLayer () {
         BTSLayer layer = new BTSLayer(lastLayerNumber);
         lastLayerNumber++;
         btsLayers.add(layer);
 
         // UI:
-        BTSLayerUI layerUI = new BTSLayerUI(layer);
+        BTSListener layerUI = AddNewBTSLayerUI(layer);
+
         layer.setListener(layerUI);
-        AddNewBTSLayerUI(layerUI);
         layer.newBTS();
     }
 
     @Override
-    public void AddNewBTSLayerUI (BTSLayerUI ui) {
-        listener.AddNewBTSLayerUI(ui);
-//        System.out.println("Layer sent to: " + listener.getClass().getSimpleName());
+    public BTSListener AddNewBTSLayerUI (BTSLayer layer) {
+        return listener.AddNewBTSLayerUI(layer);
     }
 
     public void setListener (BTSListener listener) {
@@ -81,7 +78,9 @@ public class BTSManager implements BTSListener {
 
 
     @Override
-    public void AddNewBTSPanelUI (BTSPanelUI ui) {}
+    public BTSListener AddNewBTSPanelUI (BTS bts) {
+        return null;
+    }
     @Override
     public void updateBTSPanel (UpdateStationPanelUIEvent evt) {}
 

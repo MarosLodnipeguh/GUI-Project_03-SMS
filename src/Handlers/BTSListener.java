@@ -1,13 +1,13 @@
 package Handlers;
 
-import UI.BTSLayerUI;
-import UI.BTSPanelUI;
+import Logic.BTS;
+import Logic.BTSLayer;
 
 public interface BTSListener {
 
     // Logic to UI:
-    void AddNewBTSLayerUI (BTSLayerUI ui); // BTSManager -> StationsPanel
-    void AddNewBTSPanelUI (BTSPanelUI ui); // BTSLayer -> BTSLayerUI
+    BTSListener AddNewBTSLayerUI (BTSLayer layer); // BTSManager -> StationsPanel
+    BTSListener AddNewBTSPanelUI (BTS bts); // BTSLayer -> BTSLayerUI
     void updateBTSPanel(UpdateStationPanelUIEvent evt); // BTS -> BTSPanelUI
 
 }

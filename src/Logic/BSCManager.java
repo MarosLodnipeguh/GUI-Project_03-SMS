@@ -52,15 +52,14 @@ public class BSCManager implements BSCListener {
         bscLayers.add(layer);
 
         // UI:
-        BSCLayerUI layerUI = new BSCLayerUI(layer);
+        BSCListener layerUI = AddNewBSCLayerUI(layer);
         layer.setListener(layerUI);
-        AddNewBSCLayerUI(layerUI);
         layer.newBSC();
     }
 
     @Override
-    public void AddNewBSCLayerUI (BSCLayerUI ui) {
-        listener.AddNewBSCLayerUI(ui);
+    public BSCListener AddNewBSCLayerUI(BSCLayer layer) {
+        return listener.AddNewBSCLayerUI(layer);
     }
 
     public /*synchronized*/ static int getLastLayerNumber () {
@@ -87,7 +86,9 @@ public class BSCManager implements BSCListener {
     }
 
     @Override
-    public void AddNewBSCPanelUI (BSCPanelUI ui) {}
+    public BSCListener AddNewBSCPanelUI(BSC bsc) {
+        return null;
+    }
 
     @Override
     public void updateBSCPanel (UpdateStationPanelUIEvent evt) {}

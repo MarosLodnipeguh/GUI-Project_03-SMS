@@ -1,13 +1,15 @@
 package Handlers;
 
+import Logic.BSC;
+import Logic.BSCLayer;
 import UI.BSCLayerUI;
 import UI.BSCPanelUI;
 
 public interface BSCListener {
 
     // Logic to UI:
-    void AddNewBSCLayerUI(BSCLayerUI ui); // BSCManager -> StationsPanel
-    void AddNewBSCPanelUI(BSCPanelUI ui); // BSCLayer -> BSCLayerUI
+    BSCListener AddNewBSCLayerUI(BSCLayer layer); // BSCManager -> StationsPanel
+    BSCListener AddNewBSCPanelUI(BSC bsc); // BSCLayer -> BSCLayerUI
     void updateBSCPanel(UpdateStationPanelUIEvent evt); // BSC -> BSCPanelUI
 
 

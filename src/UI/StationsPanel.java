@@ -4,6 +4,10 @@ import Handlers.NullListener;
 import Handlers.UpdateStationPanelUIEvent;
 import Handlers.BSCListener;
 import Handlers.BTSListener;
+import Logic.BSC;
+import Logic.BSCLayer;
+import Logic.BTS;
+import Logic.BTSLayer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -74,25 +78,33 @@ public class StationsPanel extends JPanel implements BTSListener, BSCListener {
     // ======================================== FROM LOGIC METHODS: ========================================
 
     @Override
-    public void AddNewBTSLayerUI (BTSLayerUI ui) {
+    public BTSListener AddNewBTSLayerUI (BTSLayer layer) {
+        BTSLayerUI layerUI = new BTSLayerUI(layer);
 
-        if (ui.getLayerNumber() == 0) {
-            BTSLayer1.add(ui);
+        if (layerUI.getLayerNumber() == 0) {
+            BTSLayer1.add(layerUI);
             BTSLayer1.repaint();
             BTSLayer1.revalidate();
         } else {
-            BTSLayer2.add(ui);
+            BTSLayer2.add(layerUI);
             BTSLayer2.repaint();
             BTSLayer2.revalidate();
         }
 
+        return layerUI;
+
     }
 
     @Override
-    public void AddNewBSCLayerUI (BSCLayerUI ui) { // zwracane przez nowo utworzony BSC
-        BSCLayersContainer.add(ui);
+    public BSCListener AddNewBSCLayerUI(BSCLayer layer) { // zwracane przez nowo utworzony BSC
+        BSCLayerUI layerUI = new BSCLayerUI(layer);
+
+
+        BSCLayersContainer.add(layerUI);
         BSCLayersContainer.repaint();
         BSCLayersContainer.revalidate();
+
+        return layerUI;
     }
 
     // ======================================== SEND TO LOGIC METHODS: ========================================
@@ -136,8 +148,8 @@ public class StationsPanel extends JPanel implements BTSListener, BSCListener {
 
 
     @Override
-    public void AddNewBSCPanelUI (BSCPanelUI ui) {
-
+    public BSCListener AddNewBSCPanelUI(BSC bsc) {
+        return null;
     }
 
 
@@ -153,8 +165,9 @@ public class StationsPanel extends JPanel implements BTSListener, BSCListener {
 
 
     @Override
-    public void AddNewBTSPanelUI (BTSPanelUI ui) {
+    public BTSListener AddNewBTSPanelUI (BTS bts) {
 
+        return null;
     }
 
     @Override
