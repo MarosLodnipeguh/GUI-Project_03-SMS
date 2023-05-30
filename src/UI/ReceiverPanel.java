@@ -5,8 +5,6 @@ import Handlers.VRDListener;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 // VRD RECEIVER DEVICE PANEL - RIGHT SIDE
 public class ReceiverPanel extends JPanel implements VRDListener {
@@ -43,7 +41,9 @@ public class ReceiverPanel extends JPanel implements VRDListener {
     }
 
     @Override
-    public void AddNewVRDPanelUI (VRDPanelUI ui) {
+    public VRDListener AddNewVRDPanelUI (VRD vrd) {
+        VRDPanelUI ui = new VRDPanelUI(vrd);
+
         ui.setUIListener(this);
         devicesContainer.add(ui);
         devicesContainer.revalidate();
@@ -51,6 +51,13 @@ public class ReceiverPanel extends JPanel implements VRDListener {
 
         revalidate();
         repaint();
+
+        return ui;
+    }
+
+    @Override
+    public void setLogicListener (VRDListener listener) {
+
     }
 
     @Override

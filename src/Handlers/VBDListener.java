@@ -6,7 +6,8 @@ import UI.VBDPanelUI;
 public interface VBDListener {
 
     // Logic to UI:
-    void AddNewVBDPanelUI(VBDPanelUI ui); // MainLogic -> VBDLayerUI
+    VBDListener AddNewVBDPanelUI(VBD vbd); // MainLogic -> VBDLayerUI
+    void setLogicListener(VBDListener listener);
 
     // UI to Logic:
     void AddNewVBD(String messageText); // VBDLayerUI -> MainLogic

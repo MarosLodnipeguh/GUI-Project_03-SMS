@@ -7,7 +7,6 @@ import UI.VRDPanelUI;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -36,22 +35,26 @@ public class MainLogic implements VBDListener, VRDListener {
 
     // ======================================================= VBD =======================================================
     @Override
-    public /*synchronized*/ void AddNewVBD (String messageText) {
+    public void AddNewVBD (String messageText) {
         VBD vbd = new VBD(messageText);
         VBDs.add(vbd);
 
         //UI:
-        VBDPanelUI ui = new VBDPanelUI(vbd);
-        ui.setLogicListener(this);
-        AddNewVBDPanelUI(ui);
+        VBDListener ui = AddNewVBDPanelUI(vbd);
+        ui.setLogicListener(this); // for getting Activity state, SendFrequency and Remove button
 
         Thread vbdThread = new Thread(vbd);
         vbdThread.start();
     }
     
     @Override
-    public void AddNewVBDPanelUI (VBDPanelUI ui) {
-        vbdListener.AddNewVBDPanelUI(ui);
+    public VBDListener AddNewVBDPanelUI (VBD vbd) {
+        return vbdListener.AddNewVBDPanelUI(vbd);
+    }
+
+    @Override
+    public void setLogicListener (VBDListener listener) {
+
     }
 
     @Override
@@ -62,23 +65,27 @@ public class MainLogic implements VBDListener, VRDListener {
 
     // ======================================================= VRD =======================================================
     @Override
-    public /*synchronized*/ void AddNewVRD () {
+    public  void AddNewVRD () {
         VRD vrd = new VRD();
         VRDs.add(vrd);
 
         //UI:
-        VRDPanelUI ui = new VRDPanelUI(vrd);
-        vrd.setListener(ui);
-        ui.setLogicListener(this);
-        AddNewVRDPanelUI(ui);
+        VRDListener ui = AddNewVRDPanelUI(vrd);
+        ui.setLogicListener(this); // for updating the received mess count
+        vrd.setListener(ui); // for getting the autoDelete checkbox state & remove button
 
         Thread VRDThread = new Thread(vrd);
         VRDThread.start();
     }
     
     @Override
-    public void AddNewVRDPanelUI (VRDPanelUI ui) {
-        vrdListener.AddNewVRDPanelUI(ui);
+    public VRDListener AddNewVRDPanelUI (VRD vrd) {
+        return vrdListener.AddNewVRDPanelUI(vrd);
+    }
+
+    @Override
+    public void setLogicListener (VRDListener listener) {
+
     }
 
     @Override

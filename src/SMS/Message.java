@@ -1,6 +1,8 @@
 package SMS;
 
 
+import java.util.ArrayList;
+
 public class Message { // obiekt przesyłany
 
     private int sender;
@@ -36,40 +38,54 @@ public class Message { // obiekt przesyłany
 
     // ==================================================== PDU ENCODING =============================================================
 
-    public byte[] encodeMessage(Message message) {
+    public byte[] encodeMessage(Message message) { // koduje do Bajtów, które potem są zamieniane na HexString w VBD
 
         int sender = message.getSender();
         int recipient = message.getRecipient();
         String content = message.getContent();
 
 
-        // Obliczanie długości tablicy bajtów potrzebnej na zakodowanie numeru recipient
+        // Obliczanie wszystkich potrzebnych długości:
         int recipientLength = getByteLength(recipient);
-
-        // Obliczanie długości tablicy bajtów potrzebnej na zakodowanie numeru sender
         int senderLength = getByteLength(sender);
+        int contentLength = content.length() ; // jeden znak HEX to 4 bity, a jeden znak ASCII to 8 bitów
 
-        // Obliczanie długości tablicy bajtów zawierających treść wiadomości
-        int contentLength = content.length() / 2; // Przekształcenie z liczby znaków na liczbę bajtów
+        // tablica, która pomieści całe PDU
+        byte[] encodedMessage = new byte[2 + recipientLength + 3 + senderLength + 3 + contentLength];
 
-        // Tworzenie tablicy bajtów o odpowiedniej długości
-        byte[] encodedMessage = new byte[8 + recipientLength + 5 + senderLength + 2 + contentLength];
+        // Ustawianie wartości kolejnych bajtów zgodnie z PDU:
 
-        // Ustawianie wartości kolejnych bajtów zgodnie z opisem
+        // recipent number length = xx
         encodedMessage[0] = (byte) recipientLength;
+
+        // type of address = 80
         encodedMessage[1] = (byte) 0x80;
+
+        // recipient number
         encodeNumber(encodedMessage, 2, recipient, recipientLength);
 
+        // message waiting = 04
         encodedMessage[2 + recipientLength] = (byte) 0x04;
 
+        // sender number length = xx
         encodedMessage[3 + recipientLength] = (byte) senderLength;
+
+        // type of address = 80
         encodedMessage[4 + recipientLength] = (byte) 0x80;
+
+        // sender number
         encodeNumber(encodedMessage, 5 + recipientLength, sender, senderLength);
 
+        // protocol identifier = 00
         encodedMessage[5 + recipientLength + senderLength] = (byte) 0x00;
+
+        // data coding scheme = 00
         encodedMessage[6 + recipientLength + senderLength] = (byte) 0x80;
 
+        // text length = xx
         encodedMessage[7 + recipientLength + senderLength] = (byte) contentLength;
+
+        // text
         encodeText(encodedMessage, 8 + recipientLength + senderLength, content);
 
         return encodedMessage;
@@ -79,7 +95,7 @@ public class Message { // obiekt przesyłany
         int length = 0;
         while (number > 0) {
             length++;
-            number >>= 4; // Przesunięcie bitowe w prawo o 4 bity (odpowiednik podzielenia przez 16)
+            number >>= 4; // Przesunięcie bitowe w prawo o 4 bity (1 HEX)
         }
         return length;
     }
@@ -98,10 +114,12 @@ public class Message { // obiekt przesyłany
 
         for (int i = 0; i < length; i++) {
             char c = text.charAt(i);
-            String hexByte = String.format("%02X", (int) c); // Konwersja znaku na wartość szesnastkową
+            String hexByte = String.format("%02X", (int) c); // Konwersja znaku na HEX
             byte value = (byte) Integer.parseInt(hexByte, 16);
             encodedMessage[startIndex + i] = value;
         }
+    }
+
 
 
 
@@ -128,7 +146,7 @@ public class Message { // obiekt przesyłany
 //            byte value = (byte) Integer.parseInt(hexByte, 16);
 //            encodedMessage[startIndex + i / 2] = value;
 //        }
-    }
+
 
 
 

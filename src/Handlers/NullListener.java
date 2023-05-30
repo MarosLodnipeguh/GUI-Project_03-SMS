@@ -47,7 +47,12 @@ public class NullListener implements VBDListener, BTSListener, BSCListener, VRDL
     }
 
     @Override
-    public void AddNewVBDPanelUI (VBDPanelUI ui) {
+    public VBDListener AddNewVBDPanelUI (VBD vbd) {
+        return null;
+    }
+
+    @Override
+    public void setLogicListener (VBDListener listener) {
 
     }
 
@@ -68,7 +73,12 @@ public class NullListener implements VBDListener, BTSListener, BSCListener, VRDL
 
 
     @Override
-    public void AddNewVRDPanelUI (VRDPanelUI ui) {
+    public VRDListener AddNewVRDPanelUI (VRD vrd) {
+        return null;
+    }
+
+    @Override
+    public void setLogicListener (VRDListener listener) {
 
     }
 
@@ -92,3 +102,4 @@ public class NullListener implements VBDListener, BTSListener, BSCListener, VRDL
 
     }
 }
+

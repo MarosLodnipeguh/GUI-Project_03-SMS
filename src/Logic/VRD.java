@@ -105,9 +105,15 @@ public class VRD implements Runnable, VRDListener {
     }
 
     @Override
-    public void AddNewVRDPanelUI (VRDPanelUI ui) {
+    public VRDListener AddNewVRDPanelUI (VRD vrd) {
+        return null;
+    }
+
+    @Override
+    public void setLogicListener (VRDListener listener) {
 
     }
+
     @Override
     public void AddNewVRD () {
 

@@ -95,6 +95,7 @@ public class VBDPanelUI extends JPanel implements VBDListener {
 
     }
 
+    @Override
     public void setLogicListener (VBDListener listenerLogic) {
         this.LogicListener = listenerLogic;
     }
@@ -117,8 +118,8 @@ public class VBDPanelUI extends JPanel implements VBDListener {
 
 
     @Override
-    public void AddNewVBDPanelUI (VBDPanelUI ui) {
-
+    public VBDListener AddNewVBDPanelUI (VBD vbd) {
+        return null;
     }
 
     @Override

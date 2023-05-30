@@ -6,6 +6,7 @@ import SMS.InvalidRecipientException;
 import SMS.Message;
 import SMS.PhoneBookLogic;
 
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -172,7 +173,7 @@ public class BTS implements Runnable {
 
     // ==================================================== PDU DECODING =============================================================
 
-    public static int decodeRecipient(String encodedHex) {
+    public int decodeRecipient(String encodedHex) {
         byte[] encodedMessage = hexToBytes(encodedHex);
 
         int recipientLength = encodedMessage[0] & 0xFF;
@@ -184,17 +185,17 @@ public class BTS implements Runnable {
         return recipient;
     }
 
-    public static int decodeNumber(byte[] encodedMessage, int startIndex, int endIndex) {
+    public int decodeNumber(byte[] encodedMessage, int startIndex, int endIndex) {
         int number = 0;
         for (int i = startIndex; i <= endIndex; i++) {
-            number <<= 4; // Przesunięcie bitowe w lewo o 4 bity (odpowiednik pomnożenia przez 16)
-            int nibble = encodedMessage[i] & 0x0F; // Pobranie ostatnich 4 bitów
-            number |= nibble; // Dodanie wartości do liczby
+            number <<= 4; // wsunięcie 4 bitów do numeru, aby zaraz do nich dodać wartość
+            int oneDigit = encodedMessage[i] & 0x0F; // Pobranie ostatnich 4 bitów numeru
+            number |= oneDigit; // Dodanie wartości do liczby
         }
         return number;
     }
 
-    public static byte[] hexToBytes(String hexString) {
+    public byte[] hexToBytes(String hexString) {
         int length = hexString.length();
         byte[] bytes = new byte[length / 2];
         for (int i = 0; i < length; i += 2) {
@@ -203,6 +204,7 @@ public class BTS implements Runnable {
         }
         return bytes;
     }
+
 
 
 

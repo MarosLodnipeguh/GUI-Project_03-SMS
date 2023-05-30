@@ -87,8 +87,8 @@ public class VRDPanelUI extends JPanel implements VRDListener {
 
 
     @Override
-    public void AddNewVRDPanelUI (VRDPanelUI ui) {
-
+    public VRDListener AddNewVRDPanelUI (VRD vrd) {
+        return null;
     }
 
     @Override

@@ -50,7 +50,9 @@ public class SenderPanel extends JPanel implements VBDListener {
 
 
     @Override
-    public void AddNewVBDPanelUI (VBDPanelUI ui) {
+    public VBDListener AddNewVBDPanelUI (VBD vbd) {
+        VBDPanelUI ui = new VBDPanelUI(vbd);
+
         ui.setUIListener(this);
         devicesContainer.add(ui);
         devicesContainer.revalidate();
@@ -58,6 +60,13 @@ public class SenderPanel extends JPanel implements VBDListener {
 
         revalidate();
         repaint();
+
+        return ui;
+    }
+
+    @Override
+    public void setLogicListener (VBDListener listener) {
+
     }
 
     @Override

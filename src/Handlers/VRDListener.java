@@ -6,7 +6,8 @@ import UI.VRDPanelUI;
 public interface VRDListener {
 
     // Logic to UI:
-    void AddNewVRDPanelUI(VRDPanelUI ui); // MainLogic -> VRDLayerUI
+    VRDListener AddNewVRDPanelUI(VRD vrd); // MainLogic -> VRDLayerUI
+    void setLogicListener(VRDListener listener);
     void UpdateVRDPanelUI(int receivedCount); // VRD -> VRDPanelUI
 
     // UI to Logic:
